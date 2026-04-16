@@ -7,7 +7,7 @@ function App() {
       <Navbar />
 
       <main className="content">
-        <h1>Petycja</h1>
+        <h1>Petycje</h1>
         <p>Tutaj wkrótce pojawi się formularz zbierania podpisów.</p>
       </main>
     </div>      
