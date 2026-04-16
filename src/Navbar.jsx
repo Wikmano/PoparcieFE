@@ -11,9 +11,10 @@ function Navbar() {
        </div>
   
       <ul className="navbar-links">
-         <li><a href="#home">Start</a></li>
+         <li><a href="#Registration">Rejestracja</a></li>
+         <li><a href="#login">Logowanie</a></li>
+         <li><a href="#Organizations">Organizacje</a></li>
          <li><a href="#about">O projekcie</a></li>
-          <li><a href="#organizations">Organizacje</a></li>
        </ul>
     </nav>
     );
