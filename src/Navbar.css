@@ -12,6 +12,11 @@
   z-index: 1000;
 }
 
+.navbar-logo-link {
+  text-decoration: none;
+  outline: none;
+}
+
 .navbar-logo {
   display: flex;
   flex-direction: row;
