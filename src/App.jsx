@@ -6,6 +6,8 @@ import PetitionDetail from './PetitionDetail';
 import './App.css';
 import Login from './Login';
 import Register from './Register';
+import Organizations from './Organizations';
+import OrganizationLogin from './OrganizationLogin';
 
 //Do zmiany na razie przykłądowe
 const petitions = [
@@ -39,6 +41,8 @@ function App() {
         <Route path="/petition/:id" element={<PetitionDetail />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/organizations" element={<Organizations />} />
+        <Route path="/organization-login" element={<OrganizationLogin />} />
       </Routes>
     </div>
   );

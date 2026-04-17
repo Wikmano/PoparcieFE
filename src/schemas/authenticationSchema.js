@@ -9,6 +9,9 @@ export const registerSchema = z.object({
         .min(12, "Hasło musi mieć mininum 12 znaków")
         .max(100, "Hasło może mieć maksymalnie 100 znaków"),
    
+    confirmPassword: z.string()
+        .min(1, "Potwierdzenie hasła jest wymagane"),
+
     name: z.string()
         .min(2, "Imię musi mieć minimum 2 znaki")
         .max(20, "Imię może mieć maksymalnie 20 znaków"),
@@ -16,6 +19,9 @@ export const registerSchema = z.object({
     surname: z.string()
     .min(2, "Naziwsko musi mieć minimum 2 znaki")
     .max(40, "Naziwsko może mieć maksymalnie 40 znaków"),
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "Hasła muszą być identyczne",
+    path: ["confirmPassword"],
 });
 
 export const loginSchema = z.object({

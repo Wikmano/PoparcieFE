@@ -5,7 +5,7 @@ import { registerSchema } from './schemas/authenticationSchema';
 import { authService } from './api/authService';
  import { useNavigate } from 'react-router-dom';
 
-function Register() {
+function Organizations() {
     const [serverResponse, setServerResponse] = useState(null);
     const navigate = useNavigate();
 
@@ -33,10 +33,10 @@ function Register() {
 
     return (
         <div className="auth-container">
-            <h2>Zarejestruj się</h2>
+            <h2>Zarejestruj organizację</h2>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="form-group">
-                    <input {...register('username')} placeholder="Nazwa użytkownika" />
+                    <input {...register('username')} placeholder="Nazwa organizacji" />
                     {errors.username && <p className="error">{errors.username.message}</p>}
                 </div>
                 <div className="form-group">
@@ -56,7 +56,7 @@ function Register() {
                     {errors.surname && <p className="error">{errors.surname.message}</p>}
                 </div>
                 <button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? 'Rejestrowanie...' : 'Zarejestruj się'}
+                    {isSubmitting ? 'Rejestrowanie...' : 'Zarejestruj organizację'}
                 </button>
             </form>
           
@@ -69,4 +69,4 @@ function Register() {
     );
 }
 
-export default Register;
+export default Organizations;
