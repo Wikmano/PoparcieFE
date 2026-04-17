@@ -1,4 +1,6 @@
+import React from 'react';
 import godlo from './assets/godlo.png';
+import { Link } from 'react-router-dom';
 import './Navbar.css';
 
 function Navbar() {
@@ -13,10 +15,10 @@ function Navbar() {
       </div>
 
       <ul className="navbar-links">
-        <li><a href="#Registration" className="nav-btn-secondary">Rejestracja</a></li>
-        <li><a href="#login" className="nav-btn-primary">Logowanie</a></li>
-        <li><a href="#Organizations">Organizacje</a></li>
-        <li><a href="#about">O projekcie</a></li>
+        <li><Link to="/register" className="nav-btn-secondary">Rejestracja</Link></li>
+        <li><Link to="/login" className="nav-btn-primary">Logowanie</Link></li>
+        <li><Link to="/organizations">Organizacje</Link></li>
+        <li><Link to="/about">O projekcie</Link></li>
       </ul>
     </nav>
   );

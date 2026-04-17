@@ -4,6 +4,8 @@ import Navbar from './Navbar';
 import PetitionCard from './PetitionCard';
 import PetitionDetail from './PetitionDetail';
 import './App.css';
+import Login from './Login';
+import Register from './Register';
 
 //Do zmiany na razie przykłądowe
 const petitions = [
@@ -35,6 +37,8 @@ function App() {
           </main>
         } />
         <Route path="/petition/:id" element={<PetitionDetail />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
     </div>
   );
