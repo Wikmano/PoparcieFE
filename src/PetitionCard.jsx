@@ -12,7 +12,9 @@ function PetitionCard({ petition }) {
       <div className="progress-bar">
         <div className="progress-fill" style={{ width: `${progress}%` }}></div>
       </div>
-      <p>{petition.votes} / {petition.target} głosów</p>
+      <p>
+        {petition.votes} / {petition.target} głosów
+      </p>
     </Link>
   );
 }

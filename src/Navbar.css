@@ -73,11 +73,13 @@
   border-radius: 100px;
   text-decoration: none;
   font-weight: 600;
-  transition: transform 0.2s, background-color 0.2s;
+  transition:
+    transform 0.2s,
+    background-color 0.2s;
 }
 
 .nav-btn-primary:hover {
-  background-color: #b3050f; 
+  background-color: #b3050f;
   transform: translateY(-2px);
 }
 
@@ -88,7 +90,10 @@
   border-radius: 100px;
   text-decoration: none;
   font-weight: 600;
-  transition: transform 0.2s, background-color 0.2s, color 0.2s;
+  transition:
+    transform 0.2s,
+    background-color 0.2s,
+    color 0.2s;
 }
 
 .nav-btn-secondary:hover {
@@ -103,7 +108,6 @@
   font-size: 16px;
   transition: color 0.3s;
 }
-
 
 .dropdown {
   position: relative;
