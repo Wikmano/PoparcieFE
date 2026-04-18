@@ -9,7 +9,9 @@ npm run dev
 ```
 
 To fix the issues during startup, run:
+
 ```bash
 npm run fix
 ```
+
 This will fix the ESLint and Prettier issues automatically.
