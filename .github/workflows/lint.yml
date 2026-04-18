@@ -21,14 +21,17 @@ permissions:
 
 jobs:
   run-linters:
-    name: Run linters
     runs-on: ubuntu-latest
-
     steps:
-      - name: Check out Git repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # Install your linters here
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Run linters
         uses: wearerequired/lint-action@v2
