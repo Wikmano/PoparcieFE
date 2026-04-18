@@ -1,5 +1,4 @@
 import React from 'react';
-import godlo from '../../../public/godlo.png';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
 
@@ -8,7 +7,7 @@ function Navbar() {
     <nav className="navbar">
       <Link to="/" className="navbar-logo-link">
         <div className="navbar-logo">
-          <img src={godlo} alt="Godło" className="navbar-godlo" />
+          <img src="/godlo.png" alt="Godło" className="navbar-godlo" />
           <div className="navbar-brand">
             <span className="logo-name">
               <span className="logo-m">m</span>Poparcie
