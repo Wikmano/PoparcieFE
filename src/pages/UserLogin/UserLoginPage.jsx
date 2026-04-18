@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { loginSchema } from './schemas/authenticationSchema';
-import { authService } from './api/authService';
+import { authService } from '../../services/authService.js';
 import { useNavigate } from 'react-router-dom';
+import { loginSchema } from '../../schemas/loginSchema.js';
 
-function OrganizationLogin() {
+function UserLoginPage() {
   const [serverResponse, setServerResponse] = useState(null);
   const navigate = useNavigate();
 
@@ -39,10 +39,10 @@ function OrganizationLogin() {
 
   return (
     <div className="auth-container">
-      <h2>Zaloguj się do organizacji</h2>
+      <h2>Zaloguj się</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="form-group">
-          <input {...register('username')} placeholder="Nazwa organizacji" />
+          <input {...register('username')} placeholder="Nazwa użytkownika" />
           {errors.username && <p className="error">{errors.username.message}</p>}
         </div>
         <div className="form-group">
@@ -61,4 +61,4 @@ function OrganizationLogin() {
   );
 }
 
-export default OrganizationLogin;
+export default UserLoginPage;

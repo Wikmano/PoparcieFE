@@ -1,5 +1,5 @@
 import React from 'react';
-import godlo from './assets/godlo.png';
+import godlo from '../../../public/godlo.png';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
 

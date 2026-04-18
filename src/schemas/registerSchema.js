@@ -28,8 +28,3 @@ export const registerSchema = z
     message: 'Hasła muszą być identyczne',
     path: ['confirmPassword'],
   });
-
-export const loginSchema = z.object({
-  username: z.string().min(1, 'Nazwa użytkownika jest wymagana'),
-  password: z.string().min(1, 'Hasło jest wymagane'),
-});

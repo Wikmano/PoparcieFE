@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { registerSchema } from './schemas/authenticationSchema';
-import { authService } from './api/authService';
+import { authService } from '../../services/authService.js';
 import { useNavigate } from 'react-router-dom';
+import { registerSchema } from '../../schemas/registerSchema.js';
 
-function Organizations() {
+function RegisterPage() {
   const [serverResponse, setServerResponse] = useState(null);
   const navigate = useNavigate();
 
@@ -36,10 +36,10 @@ function Organizations() {
 
   return (
     <div className="auth-container">
-      <h2>Zarejestruj organizację</h2>
+      <h2>Zarejestruj się</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="form-group">
-          <input {...register('username')} placeholder="Nazwa organizacji" />
+          <input {...register('username')} placeholder="Nazwa użytkownika" />
           {errors.username && <p className="error">{errors.username.message}</p>}
         </div>
         <div className="form-group">
@@ -59,7 +59,7 @@ function Organizations() {
           {errors.surname && <p className="error">{errors.surname.message}</p>}
         </div>
         <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Rejestrowanie...' : 'Zarejestruj organizację'}
+          {isSubmitting ? 'Rejestrowanie...' : 'Zarejestruj się'}
         </button>
       </form>
 
@@ -70,4 +70,4 @@ function Organizations() {
   );
 }
 
-export default Organizations;
+export default RegisterPage;

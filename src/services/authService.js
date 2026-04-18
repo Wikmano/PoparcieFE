@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { BASE_API_URL } from '../AppConfig.js';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080/api/petition',
+  baseURL: BASE_API_URL + '/auth',
 });
 
 export const authService = {
