@@ -9,20 +9,20 @@ function UnifiedRegisterPage() {
   return (
     <div className="auth-selection-page">
       <div className="auth-tabs">
-        <button 
+        <button
           className={`tab-btn ${activeTab === 'user' ? 'active' : ''}`}
           onClick={() => setActiveTab('user')}
         >
           Użytkownik
         </button>
-        <button 
+        <button
           className={`tab-btn ${activeTab === 'organization' ? 'active' : ''}`}
           onClick={() => setActiveTab('organization')}
         >
           Organizacja
         </button>
       </div>
-      
+
       <div className="auth-content">
         {activeTab === 'user' ? <RegisterPage /> : <OrganizationsPage />}
       </div>
