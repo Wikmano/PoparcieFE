@@ -5,5 +5,5 @@ services:
       dockerfile: Dockerfile
     container_name: m-poparcie-frontend
     ports:
-      - '8080:80'
+      - '5173:5173'
     restart: unless-stopped

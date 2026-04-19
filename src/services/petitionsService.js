@@ -45,12 +45,12 @@ const mockPetitionsSeed = [
 ];
 
 export class PetitionsService {
-  constructor(baseApiUrl = BASE_API_URL, useMock = USE_MOCK_PETITIONS) {
+  constructor(useMock = USE_MOCK_PETITIONS) {
     this.useMock = useMock;
-    this.api = axios.create({
-      baseURL: `${baseApiUrl}/petition`,
-    });
     this.mockPetitions = mockPetitionsSeed.map((petition) => ({ ...petition }));
+    this.api = axios.create({
+      baseURL: BASE_API_URL + 'petition/',
+    });
   }
 
   async getAllPetitions() {
@@ -58,7 +58,7 @@ export class PetitionsService {
       return this.mockPetitions.map((petition) => ({ ...petition }));
     }
 
-    const response = await this.api.get('/');
+    const response = await this.api.get('get');
     return response.data;
   }
 
