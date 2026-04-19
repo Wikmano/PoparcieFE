@@ -3,7 +3,7 @@ import { BASE_API_URL } from '../AppConfig.js';
 import { InfrastructureConstants } from '../infrastructure/Constants.js';
 
 const api = axios.create({
-  baseURL: BASE_API_URL+'petition/user/',
+  baseURL: BASE_API_URL + 'petition/user/',
 });
 
 export const authService = {
