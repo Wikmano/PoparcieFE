@@ -3,8 +3,8 @@ import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/NavBar/Navbar.jsx';
 import PetitionDetailsPage from './pages/PetitionDetail/PetitionDetailsPage.jsx';
 import './App.css';
-import LoginPage from './pages/LoginPage.jsx';
-import UnifiedRegisterPage from './pages/UnifiedRegisterPage.jsx';
+import LoginPage from './pages/Logins/LoginPage.jsx';
+import UnifiedRegisterPage from './pages/Register/UnifiedRegisterPage.jsx';
 import HomePage from './pages/HomePage/HomePage.jsx';
 
 function App() {
