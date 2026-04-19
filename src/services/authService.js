@@ -14,6 +14,10 @@ export const authService = {
       localStorage.setItem('token', token);
     }
 
+    if (response.data && response.data.status === 'success') {
+      localStorage.setItem('username', userData.username);
+    }
+
     return response.data;
   },
   login: async (credentials) => {
@@ -24,9 +28,14 @@ export const authService = {
       localStorage.setItem('token', token);
     }
 
+    if (response.data && response.data.status === 'success') {
+      localStorage.setItem('username', credentials.username);
+    }
+
     return response.data;
   },
   logout: () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('username');
   },
 };

@@ -3,10 +3,8 @@ import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/NavBar/Navbar.jsx';
 import PetitionDetailsPage from './pages/PetitionDetail/PetitionDetailsPage.jsx';
 import './App.css';
-import UserLoginPage from './pages/UserLogin/UserLoginPage.jsx';
-import RegisterPage from './pages/Register/RegisterPage.jsx';
-import OrganizationsPage from './pages/Organizations/OrganizationsPage.jsx';
-import OrganizationLoginPage from './pages/OrganizationLogin/OrganizationLoginPage.jsx';
+import LoginPage from './pages/LoginPage.jsx';
+import UnifiedRegisterPage from './pages/UnifiedRegisterPage.jsx';
 import HomePage from './pages/HomePage/HomePage.jsx';
 
 function App() {
@@ -16,10 +14,8 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/petition/:id" element={<PetitionDetailsPage />} />
-        <Route path="/login" element={<UserLoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/organizations" element={<OrganizationsPage />} />
-        <Route path="/organization-login" element={<OrganizationLoginPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<UnifiedRegisterPage />} />
       </Routes>
     </div>
   );

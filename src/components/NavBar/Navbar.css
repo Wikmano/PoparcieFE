@@ -101,6 +101,26 @@
   transform: translateY(-2px);
 }
 
+.welcome-msg {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-h);
+  margin-right: 10px;
+}
+
+.logout-btn {
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 16px;
+  outline: none;
+}
+
+.logout-btn:hover {
+  background-color: var(--accent);
+  color: white !important;
+}
+
 .navbar-links a {
   text-decoration: none;
   color: var(--text);
