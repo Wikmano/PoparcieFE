@@ -6,25 +6,17 @@ export const registerSchema = z
       .string()
       .min(3, 'Nazwa użytkownika musi mieć minimum 3 znaki')
       .max(16, 'Nazwa użytkownika może mieć maksymalnie 16 znaków'),
-
     password: z
       .string()
-      .min(12, 'Hasło musi mieć mininum 12 znaków')
+      .min(12, 'Hasło musi mieć minimum 12 znaków')
       .max(100, 'Hasło może mieć maksymalnie 100 znaków'),
-
-    confirmPassword: z.string().min(1, 'Potwierdzenie hasła jest wymagane'),
-
     name: z
       .string()
       .min(2, 'Imię musi mieć minimum 2 znaki')
       .max(20, 'Imię może mieć maksymalnie 20 znaków'),
-
     surname: z
       .string()
-      .min(2, 'Naziwsko musi mieć minimum 2 znaki')
-      .max(40, 'Naziwsko może mieć maksymalnie 40 znaków'),
+      .min(2, 'Nazwisko musi mieć minimum 2 znaki')
+      .max(40, 'Nazwisko może mieć maksymalnie 40 znaków'),
   })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: 'Hasła muszą być identyczne',
-    path: ['confirmPassword'],
-  });
+  .strict();
