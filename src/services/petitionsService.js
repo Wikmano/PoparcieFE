@@ -8,7 +8,7 @@ const mockPetitionsSeed = [
     author: 'Jan Kowalski',
     description: 'Wiecej terenow zielonych i mniej zanieczyszczen w miescie.',
     votes: 150,
-    target: 500,
+    goal: 500,
     category: 'Ekologia',
     createdAt: '2026-03-15',
   },
@@ -18,7 +18,7 @@ const mockPetitionsSeed = [
     author: 'Anna Nowak',
     description: 'Remont kluczowych drog i bezpieczniejsze przejscia dla pieszych.',
     votes: 200,
-    target: 400,
+    goal: 400,
     category: 'Infrastruktura',
     createdAt: '2026-03-16',
   },
@@ -28,7 +28,7 @@ const mockPetitionsSeed = [
     author: 'Piotr Wiśniewski',
     description: 'Nowoczesne wyposazenie szkol i darmowe zajecia dodatkowe.',
     votes: 80,
-    target: 300,
+    goal: 300,
     category: 'Edukacja',
     createdAt: '2026-03-17',
   },
@@ -38,7 +38,7 @@ const mockPetitionsSeed = [
     author: 'Maria Zielińska',
     description: 'Lepszy dostep do profilaktyki i krotsze kolejki do specjalistow.',
     votes: 120,
-    target: 600,
+    goal: 600,
     category: 'Zdrowie',
     createdAt: '2026-03-18',
   },
@@ -58,7 +58,7 @@ export class PetitionsService {
       return this.mockPetitions.map((petition) => ({ ...petition }));
     }
 
-    const response = await this.api.get('get');
+    const response = await this.api.get();
     return response.data;
   }
 

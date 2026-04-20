@@ -22,7 +22,7 @@ function PetitionDetailsPage() {
         setError('');
         setIsLoading(true);
         const data = await petitionsService.getPetitionById(id);
-        setPetition(data);
+        setPetition(data[0]); //it returns array of jsons and in this case there is only one
       } catch {
         setError('Nie udalo sie pobrac petycji');
         setPetition(null);
@@ -66,10 +66,10 @@ function PetitionDetailsPage() {
   return (
     <main className="content">
       <h1>{petition.title}</h1>
-      <p>Autor: {petition.author}</p>
-      <p>{petition.description}</p>
+      <p>Autor: {petition.authorDisplayName}</p>
+      <p>{petition.longDescription}</p>
       <p>
-        Głosy: {petition.votes} / {petition.target}
+        Głosy: {petition.votes} / {petition.goal}
       </p>
       <button type="button" onClick={handleSignPetition} disabled={isSigning}>
         {isSigning ? 'Podpisywanie...' : 'Podpisz petycje'}
