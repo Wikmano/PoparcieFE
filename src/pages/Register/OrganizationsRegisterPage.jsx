@@ -36,7 +36,7 @@ function OrganizationsRegisterPage() {
       ]}
       submitLabel="Zarejestruj organizację"
       submittingLabel="Rejestrowanie..."
-      onSubmit={(data) => authService.register(data)}
+      onSubmit={(data) => authService.register({ ...data, role: 'petition_user' })}
       onSuccess={() => {
         setTimeout(() => {
           navigate('/');

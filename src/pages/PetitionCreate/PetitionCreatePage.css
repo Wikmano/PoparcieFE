@@ -1,0 +1,54 @@
+.petition-create-page {
+  max-width: 600px;
+  margin: 32px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.petition-create-page h1 {
+  margin-bottom: 20px;
+  font-size: 1.75rem;
+  color: #1f3b6f;
+}
+
+.petition-create-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.petition-create-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-weight: 600;
+  color: #333;
+}
+
+.petition-create-form input,
+.petition-create-form textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d7d9e0;
+  border-radius: 10px;
+  background: #f8f9fc;
+  font-size: 1rem;
+  resize: vertical;
+  color: #000000;
+}
+
+.petition-create-form textarea {
+  min-height: 140px;
+}
+
+.petition-create-error {
+  color: #c72c41;
+  font-weight: 600;
+}
+
+.petition-create-form button {
+  width: fit-content;
+  padding: 12px 24px;
+}

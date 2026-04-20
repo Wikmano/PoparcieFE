@@ -102,6 +102,38 @@ export class PetitionsService {
 
     return response.data;
   }
+
+  async createPetition(petitionData) {
+    if (this.useMock) {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('User not authenticated');
+      }
+
+      const nextId = Math.max(...this.mockPetitions.map((item) => item.id), 0) + 1;
+      const newPetition = {
+        id: nextId,
+        votes: 0,
+        createdAt: new Date().toISOString().slice(0, 10),
+        ...petitionData,
+      };
+      this.mockPetitions.unshift(newPetition);
+      return { ...newPetition };
+    }
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('User not authenticated');
+    }
+
+    const response = await this.api.post('create', petitionData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  }
 }
 
 export const petitionsService = new PetitionsService();

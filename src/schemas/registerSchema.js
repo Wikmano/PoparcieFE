@@ -18,5 +18,6 @@ export const registerSchema = z
       .string()
       .min(2, 'Nazwisko musi mieć minimum 2 znaki')
       .max(40, 'Nazwisko może mieć maksymalnie 40 znaków'),
+    role: z.string().optional(),
   })
   .strict();

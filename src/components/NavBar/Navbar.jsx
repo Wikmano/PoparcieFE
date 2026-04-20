@@ -6,6 +6,9 @@ import './Navbar.css';
 function Navbar() {
   const navigate = useNavigate();
   const username = localStorage.getItem('username');
+  const token = localStorage.getItem('token');
+  const isOrganization = authService.isOrganization();
+  const isLoggedIn = Boolean(token);
 
   const handleLogout = () => {
     authService.logout();
@@ -28,8 +31,15 @@ function Navbar() {
       </Link>
 
       <ul className="navbar-links">
-        {username ? (
+        {isLoggedIn ? (
           <>
+            {isOrganization && (
+              <li>
+                <Link to="/petition/create" className="nav-btn-primary">
+                  Dodaj petycję
+                </Link>
+              </li>
+            )}
             <li className="welcome-msg">Zalogowany użytkownik: {username}</li>
             <li>
               <button onClick={handleLogout} className="nav-btn-secondary logout-btn">
