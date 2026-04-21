@@ -6,20 +6,21 @@ const api = axios.create({
   baseURL: BASE_API_URL + 'petition/user/',
 });
 
+const extractToken = (response) => {
+  // Check body first, then headers
+  if (response.data && response.data.token) return response.data.token;
+  if (typeof response.data === 'string' && response.data.length > 50) return response.data; // direct string token
+  return response.headers['authorization'] || response.headers['Authorization'];
+};
+
 export const authService = {
   register: async (userData) => {
-    console.log('Registering user with data:', userData);
     const response = await api.post('register', userData);
-
-    const token = response.headers['authorization'] || response.headers['Authorization'];
+    const token = extractToken(response);
 
     if (token) {
-      localStorage.setItem(InfrastructureConstants.Token, token);
-    } else {
-      console.warn('Registration response received but no token found. Check server response and headers.');
-    }
-
-    if (response.data && response.data.status === 'success') {
+      const cleanToken = token.startsWith('Bearer ') ? token.slice(7) : token;
+      localStorage.setItem(InfrastructureConstants.Token, cleanToken);
       localStorage.setItem(InfrastructureConstants.Username, userData.username);
     }
 
@@ -27,21 +28,16 @@ export const authService = {
   },
   login: async (credentials) => {
     const response = await api.post('login', credentials);
-    console.log('Login Headers:', response.headers);
-
     const token = extractToken(response);
 
     if (token) {
-      localStorage.setItem(InfrastructureConstants.Token, token);
-    } else {
-      console.error('Login failed: Token not found');
-    }
-
-    if (response.data && response.data.status === 'success') {
+      const cleanToken = token.startsWith('Bearer ') ? token.slice(7) : token;
+      localStorage.setItem(InfrastructureConstants.Token, cleanToken);
       localStorage.setItem(InfrastructureConstants.Username, credentials.username);
+      return { status: 'success', token: cleanToken };
+    } else {
+      throw new Error('Nieprawidłowe dane logowania lub brak tokenu');
     }
-
-    return response.data;
   },
   logout: () => {
     localStorage.removeItem(InfrastructureConstants.Token);
