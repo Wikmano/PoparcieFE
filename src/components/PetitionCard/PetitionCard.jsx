@@ -6,7 +6,7 @@ function PetitionCard({ petition }) {
   const progress = (petition.votes / petition.goal) * 100;
 
   return (
-    <Link to={`/petition/${petition._id}`} className="petition-card">
+    <Link to={`/petition/${petition.id}`} className="petition-card">
       <h3>{petition.title}</h3>
       <p>Autor: {petition.authorDisplayName}</p>
       <p>{petition.shortDescription}</p>
