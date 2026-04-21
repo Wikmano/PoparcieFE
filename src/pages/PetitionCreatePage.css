@@ -149,7 +149,7 @@
 }
 
 .submit-btn:hover:not(:disabled) {
-  background-color: #a04545;
+  background-color: #6e5eff;
 }
 
 .cancel-btn:disabled,

@@ -50,6 +50,7 @@ function Navbar() {
       <ul className="navbar-links">
         {username ? (
           <>
+            <li className="welcome-msg">Witaj, {username}!</li>
             {isOrganization && (
               <li>
                 <Link to="/petition/create" className="nav-btn-primary create-petition-btn">
@@ -57,7 +58,6 @@ function Navbar() {
                 </Link>
               </li>
             )}
-            <li className="welcome-msg">Zalogowany użytkownik: {username}</li>
             <li>
               <button onClick={handleLogout} className="nav-btn-secondary logout-btn">
                 Wyloguj
