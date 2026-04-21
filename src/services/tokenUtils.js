@@ -6,6 +6,7 @@ export function decodeToken(token) {
     if (parts.length !== 3) return null;
 
     const decoded = JSON.parse(atob(parts[1]));
+    console.log('Decoded token:', decoded);
     return decoded;
   } catch (err) {
     console.error('Error decoding token:', err);
@@ -21,5 +22,6 @@ export function getUserRoleFromToken() {
 
 export function isOrganizationUser() {
   const role = getUserRoleFromToken();
-  return role === 'petition_user';
+  // Tymczasowo: każdy zalogowany użytkownik widzi przycisk
+  return !!localStorage.getItem('token');
 }
