@@ -83,6 +83,16 @@
   transform: translateY(-2px);
 }
 
+.create-petition-btn {
+  background-color: #4caf50;
+  padding: 10px 20px;
+}
+
+.create-petition-btn:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+}
+
 .nav-btn-secondary {
   border: 2px solid var(--accent);
   color: var(--accent) !important;

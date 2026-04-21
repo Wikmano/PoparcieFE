@@ -1,11 +1,13 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authService } from '../../services/authService.js';
+import { isOrganizationUser } from '../../services/tokenUtils.js';
 import './Navbar.css';
 
 function Navbar() {
   const navigate = useNavigate();
   const username = localStorage.getItem('username');
+  const isOrganization = isOrganizationUser();
 
   const handleLogout = () => {
     authService.logout();
@@ -30,6 +32,13 @@ function Navbar() {
       <ul className="navbar-links">
         {username ? (
           <>
+            {isOrganization && (
+              <li>
+                <Link to="/petition/create" className="nav-btn-primary create-petition-btn">
+                  + Utwórz petycję
+                </Link>
+              </li>
+            )}
             <li className="welcome-msg">Zalogowany użytkownik: {username}</li>
             <li>
               <button onClick={handleLogout} className="nav-btn-secondary logout-btn">
