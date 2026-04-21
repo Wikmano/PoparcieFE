@@ -7,8 +7,9 @@ function PetitionCreatePage() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: '',
-    description: '',
-    targetSignatures: '',
+    shortDescription: '',
+    longDescription: '',
+    goal: 10000,
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -21,6 +22,13 @@ function PetitionCreatePage() {
     }));
   };
 
+  const handleGoalSelect = (value) => {
+    setFormData((prev) => ({
+      ...prev,
+      goal: value,
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -30,20 +38,21 @@ function PetitionCreatePage() {
       if (!formData.title.trim()) {
         throw new Error('Temat petycji jest wymagany');
       }
-      if (!formData.description.trim()) {
-        throw new Error('Opis petycji jest wymagany');
+      if (!formData.shortDescription.trim()) {
+        throw new Error('Krótki opis petycji jest wymagany');
       }
-      if (!formData.targetSignatures || formData.targetSignatures <= 0) {
-        throw new Error('Liczba docelowych podpisów musi być większa niż 0');
+      if (!formData.longDescription.trim()) {
+        throw new Error('Pełny opis petycji jest wymagany');
       }
 
       const petitionData = {
         title: formData.title,
-        description: formData.description,
-        targetSignatures: parseInt(formData.targetSignatures, 10),
+        shortDescription: formData.shortDescription,
+        longDescription: formData.longDescription,
+        goal: formData.goal,
       };
 
-      const response = await petitionsService.createPetition(petitionData);
+      await petitionsService.createPetition(petitionData);
       navigate('/');
     } catch (err) {
       setError(err.message || 'Błąd podczas tworzenia petycji');
@@ -74,30 +83,51 @@ function PetitionCreatePage() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="description">Opis petycji</label>
+            <label htmlFor="shortDescription">Krótki opis</label>
             <textarea
-              id="description"
-              name="description"
-              value={formData.description}
+              id="shortDescription"
+              name="shortDescription"
+              value={formData.shortDescription}
               onChange={handleChange}
-              placeholder="Opisz szczegółowo swoją petycję"
-              rows="6"
+              placeholder="Krótki opis widoczny na liście petycji"
+              rows="2"
               disabled={loading}
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="targetSignatures">Liczba docelowych podpisów</label>
-            <input
-              type="number"
-              id="targetSignatures"
-              name="targetSignatures"
-              value={formData.targetSignatures}
+            <label htmlFor="longDescription">Pełny opis petycji</label>
+            <textarea
+              id="longDescription"
+              name="longDescription"
+              value={formData.longDescription}
               onChange={handleChange}
-              placeholder="Wprowadź liczbę docelowych podpisów"
-              min="1"
+              placeholder="Opisz szczegółowo swoją petycję, argumentację i cele"
+              rows="8"
               disabled={loading}
             />
+          </div>
+
+          <div className="form-group">
+            <label>Cel zdobytych głosów</label>
+            <div className="goal-selection">
+              <button
+                type="button"
+                className={`goal-btn ${formData.goal === 10000 ? 'active' : ''}`}
+                onClick={() => handleGoalSelect(10000)}
+                disabled={loading}
+              >
+                10 000 głosów
+              </button>
+              <button
+                type="button"
+                className={`goal-btn ${formData.goal === 100000 ? 'active' : ''}`}
+                onClick={() => handleGoalSelect(100000)}
+                disabled={loading}
+              >
+                100 000 głosów
+              </button>
+            </div>
           </div>
 
           <div className="form-actions">

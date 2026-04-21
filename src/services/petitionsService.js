@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { BASE_API_URL, USE_MOCK_PETITIONS } from '../AppConfig.js';
+import { InfrastructureConstants } from '../infrastructure/Constants.js';
 
 const mockPetitionsSeed = [
   {
@@ -73,12 +74,12 @@ export class PetitionsService {
   }
 
   async signPetition(id) {
-    if (this.useMock) {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('User not authenticated');
-      }
+    const token = localStorage.getItem(InfrastructureConstants.Token);
+    if (!token) {
+      throw new Error('User not authenticated');
+    }
 
+    if (this.useMock) {
       const petitionId = Number(id);
       const petition = this.mockPetitions.find((item) => item.id === petitionId);
       if (!petition) {
@@ -87,11 +88,6 @@ export class PetitionsService {
 
       petition.votes += 1;
       return { ...petition };
-    }
-
-    const token = localStorage.getItem('token');
-    if (!token) {
-      throw new Error('User not authenticated');
     }
 
     const response = await this.api.post(`/${id}/sign`, null, {
@@ -104,30 +100,27 @@ export class PetitionsService {
   }
 
   async createPetition(petitionData) {
-    if (this.useMock) {
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('User not authenticated');
-      }
+    const token = localStorage.getItem(InfrastructureConstants.Token);
+    if (!token) {
+      throw new Error('User not authenticated');
+    }
 
+    if (this.useMock) {
       const newPetition = {
         id: Math.max(...this.mockPetitions.map((p) => p.id), 0) + 1,
         title: petitionData.title,
-        description: petitionData.description,
-        goal: petitionData.targetSignatures,
+        shortDescription: petitionData.shortDescription,
+        description: petitionData.longDescription, // Map to existing field for safety
+        longDescription: petitionData.longDescription,
+        goal: petitionData.goal,
         votes: 0,
-        author: localStorage.getItem('username'),
+        author: localStorage.getItem(InfrastructureConstants.Username) || 'Autor',
         category: 'Inne',
         createdAt: new Date().toISOString().split('T')[0],
       };
 
       this.mockPetitions.push(newPetition);
       return newPetition;
-    }
-
-    const token = localStorage.getItem('token');
-    if (!token) {
-      throw new Error('User not authenticated');
     }
 
     const response = await this.api.post('/create', petitionData, {

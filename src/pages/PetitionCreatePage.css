@@ -65,7 +65,7 @@
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #4caf50;
+  border-color: #af4c4c;
   box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
 }
 
@@ -78,6 +78,42 @@
 .form-group textarea {
   resize: vertical;
   min-height: 120px;
+}
+
+.goal-selection {
+  display: flex;
+  gap: 15px;
+  margin-top: 5px;
+}
+
+.goal-btn {
+  flex: 1;
+  padding: 15px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  color: #555;
+}
+
+.goal-btn:hover:not(:disabled) {
+  border-color: #4c00ff;
+  color: #4c00ff;
+  background: rgba(76, 0, 255, 0.05);
+}
+
+.goal-btn.active {
+  border-color: #4c00ff;
+  background-color: #4c00ff;
+  color: white;
+  box-shadow: 0 4px 10px rgba(76, 0, 255, 0.2);
+}
+
+.goal-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .form-actions {
@@ -108,12 +144,12 @@
 }
 
 .submit-btn {
-  background-color: #4caf50;
+  background-color: #4c00ff;
   color: white;
 }
 
 .submit-btn:hover:not(:disabled) {
-  background-color: #45a049;
+  background-color: #a04545;
 }
 
 .cancel-btn:disabled,

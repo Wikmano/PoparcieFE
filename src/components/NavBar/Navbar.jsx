@@ -1,16 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authService } from '../../services/authService.js';
 import { isOrganizationUser } from '../../services/tokenUtils.js';
+import { InfrastructureConstants } from '../../infrastructure/Constants.js';
 import './Navbar.css';
 
 function Navbar() {
   const navigate = useNavigate();
-  const username = localStorage.getItem('username');
-  const isOrganization = isOrganizationUser();
+  const [username, setUsername] = useState(localStorage.getItem(InfrastructureConstants.Username));
+  const [isOrganization, setIsOrganization] = useState(false);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setUsername(localStorage.getItem(InfrastructureConstants.Username));
+      setIsOrganization(isOrganizationUser());
+    };
+
+    // Sprawdzaj zmiany w localStorage
+    window.addEventListener('storage', handleStorageChange);
+
+    // Sprawdzaj przy mount'owaniu
+    handleStorageChange();
+
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   const handleLogout = () => {
     authService.logout();
+    setUsername(null);
+    setIsOrganization(false);
     navigate('/login');
     window.location.reload();
   };

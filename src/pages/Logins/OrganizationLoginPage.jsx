@@ -26,7 +26,7 @@ function OrganizationLoginPage() {
       ]}
       submitLabel="Zaloguj się"
       submittingLabel="Logowanie..."
-      onSubmit={(data) => authService.login(data)}
+      onSubmit={async (data) => await authService.login(data)}
       onSuccess={() => {
         setTimeout(() => {
           navigate('/');

@@ -40,6 +40,7 @@ function UserRegisterPage() {
       onSuccess={() => {
         setTimeout(() => {
           navigate('/');
+          window.location.reload();
         }, 1500);
       }}
       errorMessage="Wystąpił błąd podczas rejestracji"

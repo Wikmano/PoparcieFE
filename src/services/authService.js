@@ -8,17 +8,15 @@ const api = axios.create({
 
 export const authService = {
   register: async (userData) => {
-    console.log('Registering user with data:', userData, BASE_API_URL);
-    const response = await api.post('register', userData).then((response) => {
-      console.log(response);
-      return response;
-    });
+    console.log('Registering user with data:', userData);
+    const response = await api.post('register', userData);
 
-    const token =
-      response.headers[InfrastructureConstants.AuthorizationHeader] ||
-      response.headers[InfrastructureConstants.BearerHeader];
+    const token = response.headers['authorization'] || response.headers['Authorization'];
+
     if (token) {
       localStorage.setItem(InfrastructureConstants.Token, token);
+    } else {
+      console.warn('Registration response received but no token found. Check server response and headers.');
     }
 
     if (response.data && response.data.status === 'success') {
@@ -29,12 +27,14 @@ export const authService = {
   },
   login: async (credentials) => {
     const response = await api.post('login', credentials);
+    console.log('Login Headers:', response.headers);
 
-    const token =
-      response.headers[InfrastructureConstants.AuthorizationHeader] ||
-      response.headers[InfrastructureConstants.BearerHeader];
+    const token = extractToken(response);
+
     if (token) {
       localStorage.setItem(InfrastructureConstants.Token, token);
+    } else {
+      console.error('Login failed: Token not found');
     }
 
     if (response.data && response.data.status === 'success') {
