@@ -34,8 +34,8 @@ function OrganizationsRegisterPage() {
           autoComplete: 'family-name',
         },
       ]}
-        submitLabel="Zarejestruj organizację"
-        submittingLabel="Rejestrowanie..."
+      submitLabel="Zarejestruj organizację"
+      submittingLabel="Rejestrowanie..."
       onSubmit={(data) => authService.register(data)}
       onSuccess={() => {
         setTimeout(() => {

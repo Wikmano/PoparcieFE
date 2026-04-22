@@ -35,8 +35,10 @@ export function isOrganizationUser() {
 
   // Jeśli rola jest tablicą, sprawdź czy zawiera docelową rolę
   if (Array.isArray(roleData)) {
-    return roleData.some(r => 
-      typeof r === 'string' && (r.toLowerCase() === targetRole || r.toLowerCase() === `role_${targetRole}`)
+    return roleData.some(
+      (r) =>
+        typeof r === 'string' &&
+        (r.toLowerCase() === targetRole || r.toLowerCase() === `role_${targetRole}`),
     );
   }
 
