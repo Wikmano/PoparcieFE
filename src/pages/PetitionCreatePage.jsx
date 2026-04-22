@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { petitionsService } from '../services/petitionsService.js';
 import './PetitionCreatePage.css';
+import { PETITION_CATEGORIES } from '../../src/infrastructure/categories.js';
 
 function PetitionCreatePage() {
   const navigate = useNavigate();
@@ -10,23 +11,67 @@ function PetitionCreatePage() {
     shortDescription: '',
     longDescription: '',
     goal: 10000,
+    category: '',
+    deadline: '',
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === 'goal') {
+      const numericValue = Number(value);
+      setFormData((prev) => ({
+        ...prev,
+        goal: Number.isNaN(numericValue) ? value : numericValue,
+      }));
+      return;
+    }
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleGoalSelect = (value) => {
-    setFormData((prev) => ({
-      ...prev,
-      goal: value,
-    }));
+  const validateForm = () => {
+    if (!formData.title.trim()) {
+      throw new Error('Temat petycji jest wymagany');
+    }
+    if (!formData.shortDescription.trim()) {
+      throw new Error('Krótki opis petycji jest wymagany');
+    }
+    if (!formData.longDescription.trim()) {
+      throw new Error('Pełny opis petycji jest wymagany');
+    }
+    if (!formData.category.trim()) {
+      throw new Error('Kategoria petycji jest wymagana');
+    }
+    if (!formData.deadline) {
+      throw new Error('Termin zakończenia petycji jest wymagany');
+    }
+
+    const parsedGoal = Number(formData.goal);
+
+    if (!Number.isInteger(parsedGoal)) {
+      throw new Error('Cel musi być liczbą całkowitą');
+    }
+    if (parsedGoal < 100 || parsedGoal > 100000) {
+      throw new Error('Cel musi być w zakresie od 100 do 100 000');
+    }
+    if (parsedGoal % 100 !== 0) {
+      throw new Error('Cel musi być podzielny przez 100');
+    }
+
+    const parsedDeadline = Date.parse(formData.deadline);
+    if (Number.isNaN(parsedDeadline)) {
+      throw new Error('Nieprawidłowy format daty terminu');
+    }
+
+    if (parsedDeadline + 86400000 <= Date.now()) {
+      throw new Error('Termin zakończenia musi być w przyszłości');
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -35,21 +80,15 @@ function PetitionCreatePage() {
     setLoading(true);
 
     try {
-      if (!formData.title.trim()) {
-        throw new Error('Temat petycji jest wymagany');
-      }
-      if (!formData.shortDescription.trim()) {
-        throw new Error('Krótki opis petycji jest wymagany');
-      }
-      if (!formData.longDescription.trim()) {
-        throw new Error('Pełny opis petycji jest wymagany');
-      }
+      validateForm();
 
       const petitionData = {
-        title: formData.title,
-        shortDescription: formData.shortDescription,
-        longDescription: formData.longDescription,
-        goal: formData.goal,
+        title: formData.title.trim(),
+        shortDescription: formData.shortDescription.trim(),
+        longDescription: formData.longDescription.trim(),
+        goal: Number(formData.goal),
+        category: formData.category.trim(),
+        deadline: new Date(formData.deadline).toISOString(),
       };
 
       await petitionsService.createPetition(petitionData);
@@ -109,25 +148,50 @@ function PetitionCreatePage() {
           </div>
 
           <div className="form-group">
-            <label>Cel zdobytych głosów</label>
-            <div className="goal-selection">
-              <button
-                type="button"
-                className={`goal-btn ${formData.goal === 10000 ? 'active' : ''}`}
-                onClick={() => handleGoalSelect(10000)}
-                disabled={loading}
-              >
-                10 000 głosów
-              </button>
-              <button
-                type="button"
-                className={`goal-btn ${formData.goal === 100000 ? 'active' : ''}`}
-                onClick={() => handleGoalSelect(100000)}
-                disabled={loading}
-              >
-                100 000 głosów
-              </button>
-            </div>
+            <label htmlFor="category">Kategoria</label>
+            <select
+              id="category"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              disabled={loading}
+            >
+              <option value="">Wybierz kategorię</option>
+              {PETITION_CATEGORIES.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="goal">Cel zdobytych głosów</label>
+            <input
+              type="number"
+              id="goal"
+              name="goal"
+              value={formData.goal}
+              onChange={handleChange}
+              placeholder="Np. 1500"
+              min={100}
+              max={100000}
+              step={100}
+              disabled={loading}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="deadline">Deadline</label>
+            <input
+              type="date"
+              id="deadline"
+              name="deadline"
+              value={formData.deadline}
+              onChange={handleChange}
+              disabled={loading}
+              min={new Date().toISOString().split('T')[0]}
+            />
           </div>
 
           <div className="form-actions">

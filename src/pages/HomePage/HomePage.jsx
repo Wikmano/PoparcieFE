@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import PetitionCard from '../../components/PetitionCard/PetitionCard.jsx';
 import { petitionsService } from '../../services/petitionsService.js';
+import { PETITION_CATEGORIES } from '../../infrastructure/categories.js';
 
 function HomePage() {
   const SORT_BY_NEWEST = 'newest';
@@ -92,10 +93,11 @@ function HomePage() {
             className="filter-select"
           >
             <option value="All">Wszystkie kategorie</option>
-            <option value="Ekologia">Ekologia</option>
-            <option value="Infrastruktura">Infrastruktura</option>
-            <option value="Edukacja">Edukacja</option>
-            <option value="Zdrowie">Zdrowie</option>
+            {PETITION_CATEGORIES.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
           </select>
           <select
             value={sortBy}
