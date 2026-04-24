@@ -67,8 +67,12 @@ function PetitionDetailsPage() {
   }
 
   const progressPercentage = Math.min((petition.votes / petition.goal) * 100, 100);
-  const formattedDate = petition.createdAt ? new Date(petition.createdAt).toLocaleDateString('pl-PL') : 'Brak daty';
-  const formattedDeadline = petition.deadline ? new Date(petition.deadline).toLocaleDateString('pl-PL') : 'Brak terminu';
+  const formattedDate = petition.createdAt
+    ? new Date(petition.createdAt).toLocaleDateString('pl-PL')
+    : 'Brak daty';
+  const formattedDeadline = petition.deadline
+    ? new Date(petition.deadline).toLocaleDateString('pl-PL')
+    : 'Brak terminu';
 
   // Obliczanie czy petycja wygasła
   const isExpired = petition.deadline ? new Date(petition.deadline) < new Date() : false;
@@ -105,10 +109,7 @@ function PetitionDetailsPage() {
             <span className="votes-goal">z celu {petition.goal} głosów</span>
           </div>
           <div className="progress-bar-large">
-            <div
-              className="progress-fill-large"
-              style={{ width: `${progressPercentage}%` }}
-            ></div>
+            <div className="progress-fill-large" style={{ width: `${progressPercentage}%` }}></div>
           </div>
           <div className="stats-footer">
             <div className="deadline-info">
