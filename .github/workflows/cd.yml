@@ -24,12 +24,12 @@ jobs:
         with:
           context: .
           push: true
-          tags: localhost:5173/mpoparcie-frontend:latest
+          tags: localhost:5000/mpoparcie-frontend:latest
           load: true
 
       - name: Save Artifact
         run: |
-          docker save -o images-frontend.tar localhost:5173/mpoparcie-frontend:latest
+          docker save -o images-frontend.tar localhost:5000/mpoparcie-frontend:latest
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
