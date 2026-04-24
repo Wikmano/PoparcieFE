@@ -1,0 +1,46 @@
+name: CD Frontend
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+jobs:
+  build-and-push:
+    if: github.event.pull_request.merged == true
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: localhost:5000/mpoparcie-frontend:latest
+          load: true
+
+      - name: Save Artifact
+        run: |
+          docker save -o images-frontend.tar localhost:5000/mpoparcie-frontend:latest
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-images-frontend
+          path: images-frontend.tar
+
+  deploy:
+    needs: build-and-push
+    runs-on: self-hosted
+
+    steps:
+      - name: Deploy new image
+        run: |
+          docker stop m-poparcie-frontend || true
+          docker rm m-poparcie-frontend || true
+          docker run -d --restart unless-stopped -p 5173:5173 --name m-poparcie-frontend localhost:5000/mpoparcie-frontend:latest
