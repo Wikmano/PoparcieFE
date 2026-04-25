@@ -4,7 +4,6 @@ import { petitionsService } from '../services/petitionsService.js';
 import './PetitionCreatePage.css';
 import { PETITION_CATEGORIES } from '../../src/infrastructure/categories.js';
 import { petitionSchema } from '../schemas/petitionSchema.js';
-import { z } from 'zod';
 
 function PetitionCreatePage() {
   const navigate = useNavigate();
