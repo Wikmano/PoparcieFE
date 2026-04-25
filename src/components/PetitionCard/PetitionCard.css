@@ -9,9 +9,9 @@
   color: inherit;
   transition: box-shadow 0.3s;
   height: 380px;
-  width: 350px !important;     /* WYMUSZENIE SZEROKOŚCI */
+  width: 350px !important; /* WYMUSZENIE SZEROKOŚCI */
   max-width: 350px !important; /* WYMUSZENIE SZEROKOŚCI */
-  min-width: 0 !important;     /* DODANE: Blokada przed rozszerzaniem przez zawartość */
+  min-width: 0 !important; /* DODANE: Blokada przed rozszerzaniem przez zawartość */
   box-sizing: border-box;
   overflow: hidden;
   position: relative;
