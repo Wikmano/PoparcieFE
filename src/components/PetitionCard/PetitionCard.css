@@ -9,15 +9,15 @@
   color: inherit;
   transition: box-shadow 0.3s;
   height: 380px;
-  width: 100%;
-  max-width: 450px; /* DODANE: Maksymalna szerokość karty */
-  margin: 0 auto;    /* DODANE: Centrowanie karty w jej komórce */
+  width: 350px !important;     /* WYMUSZENIE SZEROKOŚCI */
+  max-width: 350px !important; /* WYMUSZENIE SZEROKOŚCI */
   box-sizing: border-box;
   overflow: hidden;
+  position: relative;
   /* DODANE: Wymuszanie łamania bardzo długich wyrazów */
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  word-break: break-word;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+  word-break: break-all !important;
 }
 
 .petition-card:hover {
