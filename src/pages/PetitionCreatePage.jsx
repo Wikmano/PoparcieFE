@@ -79,43 +79,48 @@ function PetitionCreatePage() {
     } catch (err) {
       console.error('Szczegóły błędu:', err);
 
-      // Funkcja pomocnicza do wyciągania wiadomości z różnych struktur danych
       const getErrorMessage = (obj) => {
         if (!obj) return null;
+
+        // Jeśli to tekst, spróbuj sparsować jako JSON
         if (typeof obj === 'string') {
-          // Próba sparsowania stringa, jeśli to JSON
-          if (obj.trim().startsWith('{') || obj.trim().startsWith('[')) {
+          const trimmed = obj.trim();
+          if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
             try {
-              return getErrorMessage(JSON.parse(obj));
+              return getErrorMessage(JSON.parse(trimmed));
             } catch (e) {
-              return obj;
+              return trimmed;
             }
           }
           return obj;
         }
+
+        // Jeśli to tablica, połącz błędy
         if (Array.isArray(obj)) {
           return obj.map((item) => getErrorMessage(item)).filter(Boolean).join(', ');
         }
+
+        // Jeśli to obiekt, szukaj pola z wiadomością
         if (typeof obj === 'object') {
-          return obj.message || obj.msg || obj.error || getErrorMessage(obj.errors) || JSON.stringify(obj);
+          // Kolejność szukania pól z błędem
+          const foundMsg = obj.message || obj.msg || obj.error || (obj.errors ? getErrorMessage(obj.errors) : null);
+          if (foundMsg && typeof foundMsg === 'string') return foundMsg;
+          if (foundMsg && typeof foundMsg === 'object') return getErrorMessage(foundMsg);
+          
+          // Jeśli nic nie znaleziono, a to obiekt błędu Zod
+          if (obj.issues) return getErrorMessage(obj.issues);
+          
+          return JSON.stringify(obj);
         }
+
         return String(obj);
       };
 
-      // 3. Rozpoznawanie typu błędu
-      if (err.errors && Array.isArray(err.errors)) {
-        // Błędy walidacji (Zod) - frontowe
-        setError(err.errors.map((e) => e.message).join(', '));
-      } else if (err.response) {
-        // Błędy z serwera (API)
-        console.log('Dane błędu z serwera:', err.response.data);
-        const extractedMsg = getErrorMessage(err.response.data);
-        setError(extractedMsg || 'Błąd serwera');
-      } else if (err.message) {
-        setError(err.message);
-      } else {
-        setError('Wystąpił nieoczekiwany błąd. Sprawdź konsolę.');
-      }
+      // Próbujemy wyciągnąć wiadomość z różnych źródeł (najpierw dane z serwera, potem błędy walidacji, na końcu ogólny message)
+      const errorData = err.response?.data || err.errors || err.issues || err;
+      const finalMsg = getErrorMessage(errorData);
+      
+      setError(finalMsg || 'Wystąpił nieoczekiwany błąd');
     } finally {
       setLoading(false);
     }
