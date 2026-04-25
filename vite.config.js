@@ -7,10 +7,5 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     allowedHosts: ['mpoparcie.kackrol.ovh'],
-    hmr: {
-      host: 'mpoparcie.kackrol.ovh',
-      protocol: 'wss',
-      clientPort: 443,
-    },
   },
 });
