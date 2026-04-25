@@ -9,8 +9,9 @@
   color: inherit;
   transition: box-shadow 0.3s;
   height: 380px;
-  width: 350px !important; /* WYMUSZENIE SZEROKOŚCI */
+  width: 350px !important;     /* WYMUSZENIE SZEROKOŚCI */
   max-width: 350px !important; /* WYMUSZENIE SZEROKOŚCI */
+  min-width: 0 !important;     /* DODANE: Blokada przed rozszerzaniem przez zawartość */
   box-sizing: border-box;
   overflow: hidden;
   position: relative;
@@ -32,14 +33,17 @@
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  /* DODANE: Łamanie długich tytułów */
-  word-break: break-all;
+  word-break: break-all !important;
+  min-width: 0;
 }
 
 .petition-card p:nth-of-type(1) {
   margin: 0 0 10px 0;
   font-size: 0.85rem;
   color: #666;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .petition-card p:nth-of-type(2) {
@@ -51,8 +55,8 @@
   -webkit-line-clamp: 6;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  /* DODANE: Łamanie długich opisów bez spacji */
-  word-break: break-all;
+  word-break: break-all !important;
+  min-width: 0;
 }
 
 .progress-bar {
