@@ -20,12 +20,15 @@
 }
 
 .petition-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 40px;
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 450px)) !important;
+  justify-content: center;
+  gap: 30px;
+  width: 100%;
   max-width: 1200px;
-  margin: 5rem auto 0 auto;
+  margin: 3rem auto;
   padding: 0 20px;
+  box-sizing: border-box;
 }
 
 /* Auth styles */
