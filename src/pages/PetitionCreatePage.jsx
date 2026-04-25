@@ -59,6 +59,7 @@ function PetitionCreatePage() {
     setLoading(true);
 
     try {
+      console.log('Dane formularza przed walidacją:', formData);
       // 1. Walidacja danych przez Zod (zdefiniowana w petitionSchema)
       validateForm();
 
@@ -71,17 +72,21 @@ function PetitionCreatePage() {
         deadline: new Date(formData.deadline).toISOString(),
       };
 
+      console.log('Wysyłanie danych do API:', petitionData);
+
       // 2. Próba wysłania danych do API
       await petitionsService.createPetition(petitionData);
       navigate('/');
     } catch (err) {
+      console.error('Szczegóły błędu:', err);
       // 3. Rozpoznawanie typu błędu
       if (err instanceof z.ZodError) {
         // Błędy walidacji schematu
         setError(`Błąd walidacji: ${err.errors[0]?.message || 'Niepoprawne dane'}`);
       } else if (err.response) {
         // Błędy zwrócone przez serwer (np. 400, 500)
-        setError(`Błąd serwera: ${err.response.data.message || 'Spróbuj ponownie później'}`);
+        console.log('Odpowiedź serwera:', err.response.data);
+        setError(`Błąd serwera: ${err.response.data.message || err.response.data.error || 'Spróbuj ponownie później'}`);
       } else {
         // Inne błędy (np. błąd sieci lub rzucony ręcznie w validateForm)
         setError(err.message || 'Wystąpił nieoczekiwany błąd');
