@@ -51,7 +51,7 @@
   margin: 0;
   font-size: 0.95rem;
   line-height: 1.5;
-  flex-grow: 1;
+  max-height: 9em; /* Miejsce na dokładnie 6 linii (1.5 * 6) */
   display: -webkit-box;
   -webkit-line-clamp: 6;
   -webkit-box-orient: vertical;
