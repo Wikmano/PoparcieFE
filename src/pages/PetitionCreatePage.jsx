@@ -80,18 +80,22 @@ function PetitionCreatePage() {
     } catch (err) {
       console.error('Szczegóły błędu:', err);
       // 3. Rozpoznawanie typu błędu
-      if (err instanceof z.ZodError) {
-        // Błędy walidacji schematu
-        setError(`Błąd walidacji: ${err.errors[0]?.message || 'Niepoprawne dane'}`);
+      if (err.errors && Array.isArray(err.errors) && err.errors.length > 0) {
+        // Błędy walidacji Zod (z przodu)
+        setError(`Błąd walidacji: ${err.errors[0].message}`);
       } else if (err.response) {
-        // Błędy zwrócone przez serwer (np. 400, 500)
-        console.log('Odpowiedź serwera:', err.response.data);
-        setError(
-          `Błąd serwera: ${err.response.data.message || err.response.data.error || 'Spróbuj ponownie później'}`,
-        );
+        // Błędy zwrócone przez serwer (API)
+        console.log('Dane błędu z serwera:', err.response.data);
+        const serverMsg =
+          err.response.data?.message ||
+          err.response.data?.error ||
+          (typeof err.response.data === 'string' ? err.response.data : JSON.stringify(err.response.data));
+        setError(`Błąd serwera: ${serverMsg || 'Nieznany błąd serwera'}`);
+      } else if (err.message) {
+        // Błędy sieciowe lub rzucone ręcznie (np. deadline)
+        setError(err.message);
       } else {
-        // Inne błędy (np. błąd sieci lub rzucony ręcznie w validateForm)
-        setError(err.message || 'Wystąpił nieoczekiwany błąd');
+        setError('Wystąpił nieoczekiwany błąd. Sprawdź konsolę.');
       }
     } finally {
       setLoading(false);
