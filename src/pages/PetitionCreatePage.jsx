@@ -87,23 +87,33 @@ function PetitionCreatePage() {
       } else if (err.response) {
         // Błędy z serwera
         console.log('Dane błędu z serwera:', err.response.data);
-        
-        let serverMsg = 'Błąd serwera';
-        const data = err.response.data;
 
-        if (Array.isArray(data)) {
-          // Jeśli serwer zwraca tablicę błędów (jak na Twoim screenie)
-          serverMsg = data.map(e => e.message || e.msg || JSON.stringify(e)).join(', ');
-        } else if (typeof data === 'object' && data !== null) {
-          serverMsg = data.message || data.error || JSON.stringify(data);
-        } else if (typeof data === 'string') {
-          serverMsg = data;
+        let data = err.response.data;
+        let serverMsg = '';
+
+        // Próba sparsowania, jeśli data jest stringiem (czasami API zwraca stringified JSON)
+        if (typeof data === 'string') {
+          try {
+            const parsed = JSON.parse(data);
+            data = parsed;
+          } catch (e) {
+            serverMsg = data;
+          }
         }
 
-        setError(`Błąd serwera: ${serverMsg}`);
+        if (!serverMsg) {
+          if (Array.isArray(data)) {
+            // Jeśli to tablica błędów, wyciągamy same wiadomości
+            serverMsg = data.map((e) => e.message || e.msg || (typeof e === 'string' ? e : JSON.stringify(e))).join(', ');
+          } else if (typeof data === 'object' && data !== null) {
+            serverMsg = data.message || data.error || JSON.stringify(data);
+          } else {
+            serverMsg = String(data);
+          }
+        }
+
+        setError(serverMsg || 'Błąd serwera');
       } else if (err.message) {
-        setError(err.message);
-      } else {
         setError('Wystąpił nieoczekiwany błąd. Sprawdź konsolę.');
       }
     } finally {
