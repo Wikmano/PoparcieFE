@@ -26,7 +26,7 @@ function HomePage() {
         if (!isMounted) {
           return;
         }
-        setPetitions(Array.isArray(data) ? data : []);
+        setPetitions(Array.isArray(data.data) ? data.data : []);
       } catch {
         if (!isMounted) {
           return;
