@@ -4,6 +4,7 @@ import { petitionsService } from '../services/petitionsService.js';
 import './PetitionCreatePage.css';
 import { PETITION_CATEGORIES } from '../../src/infrastructure/categories.js';
 import { petitionSchema } from '../schemas/petitionSchema.js';
+import { z } from 'zod';
 
 function PetitionCreatePage() {
   const navigate = useNavigate();
@@ -43,7 +44,7 @@ function PetitionCreatePage() {
     });
 
     if (!result.success) {
-      throw new Error(result.error.errors[0].message);
+      throw result.error;
     }
 
     const parsedDeadline = Date.parse(formData.deadline);
@@ -75,11 +76,11 @@ function PetitionCreatePage() {
       navigate('/');
     } catch (err) {
       // 3. Rozpoznawanie typu błędu
-      if (err.name === 'ZodError') {
-        // Błędy walidacji schematu(nasz fix na błędne petycje)
-        setError(`Błąd walidacji: ${err.errors[0].message}`);
+      if (err instanceof z.ZodError) {
+        // Błędy walidacji schematu
+        setError(`Błąd walidacji: ${err.errors[0]?.message || 'Niepoprawne dane'}`);
       } else if (err.response) {
-        // Błędy zwrócone przez serwer (np. 400, 500 - ewentualnie do zmiany)
+        // Błędy zwrócone przez serwer (np. 400, 500)
         setError(`Błąd serwera: ${err.response.data.message || 'Spróbuj ponownie później'}`);
       } else {
         // Inne błędy (np. błąd sieci lub rzucony ręcznie w validateForm)
