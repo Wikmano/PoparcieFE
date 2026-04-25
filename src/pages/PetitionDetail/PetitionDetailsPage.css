@@ -26,6 +26,8 @@
   text-align: center;
   position: relative;
   overflow: hidden;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Badges styling */
@@ -69,6 +71,7 @@
   line-height: 1.1;
   color: var(--text-h);
   word-wrap: break-word;
+  word-break: break-all;
 }
 
 .author-info {
@@ -104,6 +107,8 @@
   border-radius: 20px;
   position: relative;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+  word-wrap: break-word;
+  word-break: break-all;
 }
 
 .description-label {
