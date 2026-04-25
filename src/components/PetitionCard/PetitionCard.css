@@ -10,6 +10,8 @@
   transition: box-shadow 0.3s;
   height: 380px;
   width: 100%;
+  max-width: 450px; /* DODANE: Maksymalna szerokość karty */
+  margin: 0 auto;    /* DODANE: Centrowanie karty w jej komórce */
   box-sizing: border-box;
   overflow: hidden;
   /* DODANE: Wymuszanie łamania bardzo długich wyrazów */
