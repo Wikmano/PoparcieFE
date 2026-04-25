@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { BASE_API_URL, USE_MOCK_PETITIONS } from '../AppConfig.js';
-import { InfrastructureConstants } from '../infrastructure/Constants.js';
 
 const mockPetitionsSeed = [
   {
@@ -73,48 +72,15 @@ export class PetitionsService {
     return response.data;
   }
 
-  async signPetition(id) {
-    const token = localStorage.getItem(InfrastructureConstants.Token);
-    if (!token) {
-      throw new Error('User not authenticated');
-    }
-
-    if (this.useMock) {
-      const petitionId = Number(id);
-      const petition = this.mockPetitions.find((item) => item.id === petitionId);
-      if (!petition) {
-        throw new Error('Petition not found');
-      }
-
-      petition.votes += 1;
-      return { ...petition };
-    }
-
-    const response = await this.api.post(`/${id}/sign`, null, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    return response.data;
-  }
-
   async createPetition(petitionData) {
-    const token = localStorage.getItem(InfrastructureConstants.Token);
-    if (!token) {
-      throw new Error('User not authenticated');
-    }
-
     if (this.useMock) {
       const newPetition = {
-        id: Math.max(...this.mockPetitions.map((p) => p.id), 0) + 1,
         title: petitionData.title,
         shortDescription: petitionData.shortDescription,
         description: petitionData.longDescription, // Map to existing field for safety
         longDescription: petitionData.longDescription,
         goal: petitionData.goal,
         votes: 0,
-        author: localStorage.getItem(InfrastructureConstants.Username) || 'Autor',
         category: 'Inne',
         createdAt: new Date().toISOString().split('T')[0],
       };
@@ -124,9 +90,7 @@ export class PetitionsService {
     }
 
     const response = await this.api.post('/create', petitionData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      withCredentials: true,
     });
 
     return response.data;
