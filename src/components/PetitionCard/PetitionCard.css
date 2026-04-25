@@ -28,7 +28,8 @@
 .petition-card h3 {
   margin: 0 0 10px 0;
   font-size: 1.2rem;
-  height: 2.8em;
+  line-height: 1.4;
+  max-height: 2.8em; /* Miejsce na dokładnie 2 linie */
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
