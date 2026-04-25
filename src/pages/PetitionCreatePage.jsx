@@ -78,39 +78,39 @@ function PetitionCreatePage() {
       navigate('/');
     } catch (err) {
       console.error('Szczegóły błędu:', err);
-      
+
+      // Funkcja pomocnicza do wyciągania wiadomości z różnych struktur danych
+      const getErrorMessage = (obj) => {
+        if (!obj) return null;
+        if (typeof obj === 'string') {
+          // Próba sparsowania stringa, jeśli to JSON
+          if (obj.trim().startsWith('{') || obj.trim().startsWith('[')) {
+            try {
+              return getErrorMessage(JSON.parse(obj));
+            } catch (e) {
+              return obj;
+            }
+          }
+          return obj;
+        }
+        if (Array.isArray(obj)) {
+          return obj.map((item) => getErrorMessage(item)).filter(Boolean).join(', ');
+        }
+        if (typeof obj === 'object') {
+          return obj.message || obj.msg || obj.error || getErrorMessage(obj.errors) || JSON.stringify(obj);
+        }
+        return String(obj);
+      };
+
       // 3. Rozpoznawanie typu błędu
       if (err.errors && Array.isArray(err.errors)) {
-        // Błędy walidacji (Zod) - zbieramy wszystkie komunikaty
-        const messages = err.errors.map((e) => e.message).join(', ');
-        setError(messages);
+        // Błędy walidacji (Zod) - frontowe
+        setError(err.errors.map((e) => e.message).join(', '));
       } else if (err.response) {
-        // Błędy z serwera
+        // Błędy z serwera (API)
         console.log('Dane błędu z serwera:', err.response.data);
-
-        let data = err.response.data;
-        let serverMsg = '';
-
-        // Próba sparsowania, jeśli data jest stringiem
-        if (typeof data === 'string') {
-          try {
-            data = JSON.parse(data);
-          } catch (e) {
-            serverMsg = data;
-          }
-        }
-
-        if (!serverMsg) {
-          if (Array.isArray(data)) {
-            serverMsg = data.map((e) => e.message || e.msg || (typeof e === 'string' ? e : JSON.stringify(e))).join(', ');
-          } else if (typeof data === 'object' && data !== null) {
-            serverMsg = data.message || data.error || JSON.stringify(data);
-          } else {
-            serverMsg = String(data);
-          }
-        }
-
-        setError(serverMsg);
+        const extractedMsg = getErrorMessage(err.response.data);
+        setError(extractedMsg || 'Błąd serwera');
       } else if (err.message) {
         setError(err.message);
       } else {
