@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authService } from '../../services/authService.js';
-import { isOrganizationUser } from '../../services/tokenUtils.js';
-import { InfrastructureConstants } from '../../infrastructure/Constants.js';
 import './Navbar.css';
 
 function Navbar() {
   const navigate = useNavigate();
-  const [username, setUsername] = useState(localStorage.getItem(InfrastructureConstants.Username));
+  const [username, setUsername] = useState(
+    localStorage.getItem('username') ? localStorage.getItem('username') : null,
+  );
   const [isOrganization, setIsOrganization] = useState(false);
 
   useEffect(() => {
     const handleStorageChange = () => {
-      setUsername(localStorage.getItem(InfrastructureConstants.Username));
-      setIsOrganization(isOrganizationUser());
+      setUsername(localStorage.getItem('username'));
+      setIsOrganization(localStorage.getItem('role') === 'petition_user' ? true : false);
     };
 
     // Sprawdzaj zmiany w localStorage
