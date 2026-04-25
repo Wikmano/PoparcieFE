@@ -82,8 +82,8 @@ function PetitionCreatePage() {
       // 3. Rozpoznawanie typu błędu
       if (err.errors && Array.isArray(err.errors)) {
         // Błędy walidacji (Zod) - zbieramy wszystkie komunikaty
-        const messages = err.errors.map(e => e.message).join(', ');
-        setError(`Błąd walidacji: ${messages}`);
+        const messages = err.errors.map((e) => e.message).join(', ');
+        setError(messages);
       } else if (err.response) {
         // Błędy z serwera
         console.log('Dane błędu z serwera:', err.response.data);
@@ -91,11 +91,10 @@ function PetitionCreatePage() {
         let data = err.response.data;
         let serverMsg = '';
 
-        // Próba sparsowania, jeśli data jest stringiem (czasami API zwraca stringified JSON)
+        // Próba sparsowania, jeśli data jest stringiem
         if (typeof data === 'string') {
           try {
-            const parsed = JSON.parse(data);
-            data = parsed;
+            data = JSON.parse(data);
           } catch (e) {
             serverMsg = data;
           }
@@ -103,7 +102,6 @@ function PetitionCreatePage() {
 
         if (!serverMsg) {
           if (Array.isArray(data)) {
-            // Jeśli to tablica błędów, wyciągamy same wiadomości
             serverMsg = data.map((e) => e.message || e.msg || (typeof e === 'string' ? e : JSON.stringify(e))).join(', ');
           } else if (typeof data === 'object' && data !== null) {
             serverMsg = data.message || data.error || JSON.stringify(data);
@@ -112,8 +110,10 @@ function PetitionCreatePage() {
           }
         }
 
-        setError(serverMsg || 'Błąd serwera');
+        setError(serverMsg);
       } else if (err.message) {
+        setError(err.message);
+      } else {
         setError('Wystąpił nieoczekiwany błąd. Sprawdź konsolę.');
       }
     } finally {
