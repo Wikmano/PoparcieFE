@@ -86,7 +86,9 @@ function PetitionCreatePage() {
       } else if (err.response) {
         // Błędy zwrócone przez serwer (np. 400, 500)
         console.log('Odpowiedź serwera:', err.response.data);
-        setError(`Błąd serwera: ${err.response.data.message || err.response.data.error || 'Spróbuj ponownie później'}`);
+        setError(
+          `Błąd serwera: ${err.response.data.message || err.response.data.error || 'Spróbuj ponownie później'}`,
+        );
       } else {
         // Inne błędy (np. błąd sieci lub rzucony ręcznie w validateForm)
         setError(err.message || 'Wystąpił nieoczekiwany błąd');
