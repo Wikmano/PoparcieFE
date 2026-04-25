@@ -88,7 +88,9 @@ function PetitionCreatePage() {
         const serverMsg =
           err.response.data?.message ||
           err.response.data?.error ||
-          (typeof err.response.data === 'string' ? err.response.data : JSON.stringify(err.response.data));
+          (typeof err.response.data === 'string'
+            ? err.response.data
+            : JSON.stringify(err.response.data));
         setError(`Błąd serwera: ${serverMsg || 'Nieznany błąd serwera'}`);
       } else if (err.message) {
         // Błędy sieciowe lub rzucone ręcznie (np. deadline)
