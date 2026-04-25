@@ -88,7 +88,7 @@ function PetitionCreatePage() {
           if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
             try {
               return getErrorMessage(JSON.parse(trimmed));
-            } catch (e) {
+            } catch {
               return trimmed;
             }
           }
@@ -97,19 +97,26 @@ function PetitionCreatePage() {
 
         // Jeśli to tablica, połącz błędy
         if (Array.isArray(obj)) {
-          return obj.map((item) => getErrorMessage(item)).filter(Boolean).join(', ');
+          return obj
+            .map((item) => getErrorMessage(item))
+            .filter(Boolean)
+            .join(', ');
         }
 
         // Jeśli to obiekt, szukaj pola z wiadomością
         if (typeof obj === 'object') {
           // Kolejność szukania pól z błędem
-          const foundMsg = obj.message || obj.msg || obj.error || (obj.errors ? getErrorMessage(obj.errors) : null);
+          const foundMsg =
+            obj.message ||
+            obj.msg ||
+            obj.error ||
+            (obj.errors ? getErrorMessage(obj.errors) : null);
           if (foundMsg && typeof foundMsg === 'string') return foundMsg;
           if (foundMsg && typeof foundMsg === 'object') return getErrorMessage(foundMsg);
-          
+
           // Jeśli nic nie znaleziono, a to obiekt błędu Zod
           if (obj.issues) return getErrorMessage(obj.issues);
-          
+
           return JSON.stringify(obj);
         }
 
@@ -119,7 +126,7 @@ function PetitionCreatePage() {
       // Próbujemy wyciągnąć wiadomość z różnych źródeł (najpierw dane z serwera, potem błędy walidacji, na końcu ogólny message)
       const errorData = err.response?.data || err.errors || err.issues || err;
       const finalMsg = getErrorMessage(errorData);
-      
+
       setError(finalMsg || 'Wystąpił nieoczekiwany błąd');
     } finally {
       setLoading(false);
