@@ -58,6 +58,7 @@ function PetitionCreatePage() {
     setLoading(true);
 
     try {
+      // 1. Walidacja danych przez Zod (zdefiniowana w petitionSchema)
       validateForm();
 
       const petitionData = {
@@ -69,10 +70,21 @@ function PetitionCreatePage() {
         deadline: new Date(formData.deadline).toISOString(),
       };
 
+      // 2. Próba wysłania danych do API
       await petitionsService.createPetition(petitionData);
       navigate('/');
     } catch (err) {
-      setError(err.message || 'Błąd podczas tworzenia petycji');
+      // 3. Rozpoznawanie typu błędu
+      if (err.name === 'ZodError') {
+        // Błędy walidacji schematu(nasz fix na błędne petycje)
+        setError(`Błąd walidacji: ${err.errors[0].message}`);
+      } else if (err.response) {
+        // Błędy zwrócone przez serwer (np. 400, 500 - ewentualnie do zmiany)
+        setError(`Błąd serwera: ${err.response.data.message || 'Spróbuj ponownie później'}`);
+      } else {
+        // Inne błędy (np. błąd sieci lub rzucony ręcznie w validateForm)
+        setError(err.message || 'Wystąpił nieoczekiwany błąd');
+      }
     } finally {
       setLoading(false);
     }
