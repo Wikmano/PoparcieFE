@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { petitionsService } from '../services/petitionsService.js';
 import './PetitionCreatePage.css';
 import { PETITION_CATEGORIES } from '../../src/infrastructure/categories.js';
+import { petitionSchema } from '../schemas/petitionSchema.js';
 
 function PetitionCreatePage() {
   const navigate = useNavigate();
@@ -36,39 +37,16 @@ function PetitionCreatePage() {
   };
 
   const validateForm = () => {
-    if (!formData.title.trim()) {
-      throw new Error('Temat petycji jest wymagany');
-    }
-    if (!formData.shortDescription.trim()) {
-      throw new Error('Krótki opis petycji jest wymagany');
-    }
-    if (!formData.longDescription.trim()) {
-      throw new Error('Pełny opis petycji jest wymagany');
-    }
-    if (!formData.category.trim()) {
-      throw new Error('Kategoria petycji jest wymagana');
-    }
-    if (!formData.deadline) {
-      throw new Error('Termin zakończenia petycji jest wymagany');
-    }
+    const result = petitionSchema.safeParse({
+      ...formData,
+      goal: Number(formData.goal),
+    });
 
-    const parsedGoal = Number(formData.goal);
-
-    if (!Number.isInteger(parsedGoal)) {
-      throw new Error('Cel musi być liczbą całkowitą');
-    }
-    if (parsedGoal < 100 || parsedGoal > 100000) {
-      throw new Error('Cel musi być w zakresie od 100 do 100 000');
-    }
-    if (parsedGoal % 100 !== 0) {
-      throw new Error('Cel musi być podzielny przez 100');
+    if (!result.success) {
+      throw new Error(result.error.errors[0].message);
     }
 
     const parsedDeadline = Date.parse(formData.deadline);
-    if (Number.isNaN(parsedDeadline)) {
-      throw new Error('Nieprawidłowy format daty terminu');
-    }
-
     if (parsedDeadline + 86400000 <= Date.now()) {
       throw new Error('Termin zakończenia musi być w przyszłości');
     }
