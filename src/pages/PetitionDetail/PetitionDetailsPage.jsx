@@ -22,7 +22,7 @@ function PetitionDetailsPage() {
         setError('');
         setIsLoading(true);
         const data = await petitionsService.getPetitionById(id);
-        const p = Array.isArray(data.data) ? data.data[0] : data;
+        const p = data.data;
         setPetition(p);
       } catch {
         setError('Nie udało się pobrać petycji');
