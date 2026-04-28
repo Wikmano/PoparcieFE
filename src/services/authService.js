@@ -10,8 +10,9 @@ export const authService = {
   register: async (userData) => {
     const response = await api.post('register', userData);
     if (response.status === 201) {
-      localStorage.setItem('username', userData.data.username);
-      localStorage.setItem('role', userData.data.role);
+      localStorage.setItem('username', userData.username);
+      localStorage.setItem('role', userData.role);
+
       return response.data;
     } else {
       throw new Error('Registration failed');
