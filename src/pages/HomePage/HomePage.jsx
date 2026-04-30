@@ -101,7 +101,7 @@ function HomePage() {
             className="search-input"
           />
           <button type="button" className="filter-button" onClick={handleSearchClick}>
-            🔍 Szukaj
+            Szukaj
           </button>
           <select
             value={selectedCategory}
