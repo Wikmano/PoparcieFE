@@ -53,12 +53,53 @@ export class PetitionsService {
     });
   }
 
-  async getAllPetitions() {
+  async getAllPetitions(query = {}) {
+    const { title, category, page = 1, perPage = 20, sortBy, sortOrder } = query;
+
     if (this.useMock) {
-      return this.mockPetitions.map((petition) => ({ ...petition }));
+      let filtered = this.mockPetitions.map((petition) => ({ ...petition }));
+
+      if (title) {
+        const normalizedQuery = title.toLowerCase();
+        filtered = filtered.filter(
+          (petition) =>
+            petition.title.toLowerCase().includes(normalizedQuery) ||
+            petition.author.toLowerCase().includes(normalizedQuery),
+        );
+      }
+
+      if (category && category !== 'All') {
+        filtered = filtered.filter((petition) => petition.category === category);
+      }
+
+      const direction = sortOrder === 'desc' ? -1 : 1;
+      filtered.sort((a, b) => {
+        if (sortBy === 'a') {
+          return a.title.localeCompare(b.title) * direction;
+        }
+        if (sortBy === 'v') {
+          return (a.votes - b.votes) * direction;
+        }
+        if (sortBy === 'd') {
+          return (new Date(a.deadline || a.createdAt) - new Date(b.deadline || b.createdAt)) * direction;
+        }
+        return (new Date(a.createdAt) - new Date(b.createdAt)) * direction;
+      });
+
+      const startIndex = (page - 1) * perPage;
+      const paged = filtered.slice(startIndex, startIndex + perPage);
+      return { data: { petitions: paged } };
     }
 
-    const response = await this.api.get();
+    const params = {};
+    if (title) params.title = title;
+    if (category && category !== 'All') params.category = category;
+    if (sortBy) params.sortBy = sortBy;
+    if (sortOrder) params.sortOrder = sortOrder;
+    params.page = page;
+    params.perPage = perPage;
+
+    const response = await this.api.get('', { params });
     return response.data;
   }
 

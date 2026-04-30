@@ -220,6 +220,27 @@
   padding-right: 30px;
 }
 
+.filter-button {
+  flex: 0 0 auto;
+  min-width: 100px;
+  padding: 8px 18px;
+  border: 1px solid var(--accent);
+  border-radius: 100px;
+  background-color: #fff;
+  color: #222;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-button:hover,
+.filter-button:focus {
+  background-color: #f9f9f9;
+  border-color: var(--accent);
+  outline: none;
+}
+
 .filter-select:hover,
 .filter-select:focus {
   background-color: #f9f9f9;
