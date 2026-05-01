@@ -1,82 +1,115 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import PetitionCard from '../../components/PetitionCard/PetitionCard.jsx';
 import { petitionsService } from '../../services/petitionsService.js';
-import { PETITION_CATEGORIES } from '../../infrastructure/categories.js';
+import { PETITION_CATEGORIES } from '../../constants/categories.js';
+
+const SORT_BY_CREATED_AT = 'createdAt';
+const SORT_BY_TITLE = 'a';
+const SORT_BY_VOTES = 'v';
+const SORT_BY_DEADLINE = 'd';
+const SORT_ORDER_ASC = 'asc';
+const SORT_ORDER_DESC = 'desc';
 
 function HomePage() {
-  const SORT_BY_NEWEST = 'newest';
-  const SORT_BY_OLDEST = 'oldest';
-  const SORT_BY_MOST_VOTES = 'mostVotes';
-
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [sortBy, setSortBy] = useState(SORT_BY_NEWEST);
+  const [sortBy, setSortBy] = useState(SORT_BY_CREATED_AT);
+  const [sortOrder, setSortOrder] = useState(SORT_ORDER_DESC);
   const [petitions, setPetitions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const isMountedRef = useRef(true);
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const loadPetitions = async () => {
-      try {
-        setError('');
-        setIsLoading(true);
-        const data = await petitionsService.getAllPetitions();
-        if (!isMounted) {
-          return;
-        }
-        setPetitions(Array.isArray(data.data) ? data.data : []);
-      } catch {
-        if (!isMounted) {
-          return;
-        }
-        setError('Nie udalo sie pobrac petycji');
-        setPetitions([]);
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
+  const fetchPetitions = useCallback(async (options = {}) => {
+    try {
+      if (!isMountedRef.current) {
+        return;
       }
-    };
-
-    loadPetitions();
-
-    return () => {
-      isMounted = false;
-    };
+      setError('');
+      setIsLoading(true);
+      const query = {
+        title: options.title ?? '',
+        category: options.category ?? 'All',
+        sortBy: options.sortBy ?? SORT_BY_CREATED_AT,
+        sortOrder: options.sortOrder ?? SORT_ORDER_DESC,
+        page: 1,
+        perPage: 20,
+      };
+      const data = await petitionsService.getAllPetitions(query);
+      if (!isMountedRef.current) {
+        return;
+      }
+      const fetchedPetitions = Array.isArray(data?.data?.petitions)
+        ? data.data.petitions
+        : Array.isArray(data?.petitions)
+          ? data.petitions
+          : Array.isArray(data)
+            ? data
+            : [];
+      setPetitions(fetchedPetitions);
+    } catch {
+      if (!isMountedRef.current) {
+        return;
+      }
+      setError('Nie udało się pobrać petycji');
+      setPetitions([]);
+    } finally {
+      if (isMountedRef.current) {
+        setIsLoading(false);
+      }
+    }
   }, []);
 
-  const filteredPetitions = useMemo(
-    () =>
-      petitions
-        .filter((petition) => {
-          const matchesSearch =
-            petition.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            petition.author.toLowerCase().includes(searchQuery.toLowerCase());
-          const matchesCategory =
-            selectedCategory === 'All' || petition.category === selectedCategory;
-          return matchesSearch && matchesCategory;
-        })
-        .sort((a, b) => {
-          if (sortBy === SORT_BY_NEWEST) {
-            return new Date(b.createdAt) - new Date(a.createdAt);
-          }
-          if (sortBy === SORT_BY_OLDEST) {
-            return new Date(a.createdAt) - new Date(b.createdAt);
-          }
-          if (sortBy === SORT_BY_MOST_VOTES) {
-            return b.votes - a.votes;
-          }
-          return 0;
-        }),
-    [petitions, searchQuery, selectedCategory, sortBy],
-  );
+  useEffect(() => {
+    isMountedRef.current = true;
+
+    fetchPetitions({
+      title: '',
+      category: 'All',
+      sortBy: SORT_BY_CREATED_AT,
+      sortOrder: SORT_ORDER_DESC,
+    });
+
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, [fetchPetitions]);
+
+  const handleSearchClick = async () => {
+    await fetchPetitions({
+      title: searchQuery,
+      category: selectedCategory,
+      sortBy,
+      sortOrder,
+    });
+    setSearchQuery('');
+  };
+
+  const handleCategoryChange = async (category) => {
+    setSelectedCategory(category);
+    await fetchPetitions({
+      title: searchQuery,
+      category,
+      sortBy,
+      sortOrder,
+    });
+  };
+
+  const handleToggleSortOrder = async () => {
+    const nextOrder = sortOrder === SORT_ORDER_DESC ? SORT_ORDER_ASC : SORT_ORDER_DESC;
+    setSortOrder(nextOrder);
+    await fetchPetitions({
+      title: searchQuery,
+      category: selectedCategory,
+      sortBy,
+      sortOrder: nextOrder,
+    });
+  };
 
   return (
     <main className="content">
       <h1>Petycje</h1>
-      {isLoading && <p>Ladowanie...</p>}
+      {isLoading && <p>Ładowanie...</p>}
       {error && <p>{error}</p>}
       <div className="filters-wrapper">
         <div className="filters-container">
@@ -87,9 +120,12 @@ function HomePage() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="search-input"
           />
+          <button type="button" className="filter-button" onClick={handleSearchClick}>
+            Szukaj
+          </button>
           <select
             value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
+            onChange={(e) => handleCategoryChange(e.target.value)}
             className="filter-select"
           >
             <option value="All">Wszystkie kategorie</option>
@@ -104,13 +140,17 @@ function HomePage() {
             onChange={(e) => setSortBy(e.target.value)}
             className="filter-select"
           >
-            <option value={SORT_BY_NEWEST}>Najnowsze</option>
-            <option value={SORT_BY_OLDEST}>Najstarsze</option>
-            <option value={SORT_BY_MOST_VOTES}>Najwięcej głosów</option>
+            <option value={SORT_BY_CREATED_AT}>Data utworzenia</option>
+            <option value={SORT_BY_TITLE}>Tytuł</option>
+            <option value={SORT_BY_VOTES}>Głosy</option>
+            <option value={SORT_BY_DEADLINE}>Termin</option>
           </select>
+          <button type="button" className="filter-button" onClick={handleToggleSortOrder}>
+            {sortOrder === SORT_ORDER_DESC ? 'Pokaż od góry' : 'Pokaż od dołu'}
+          </button>
         </div>
       </div>
-      {!isLoading && !error && <PetitionList petitions={filteredPetitions} />}
+      {!isLoading && !error && <PetitionList petitions={petitions} />}
     </main>
   );
 }

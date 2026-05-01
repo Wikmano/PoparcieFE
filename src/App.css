@@ -180,12 +180,12 @@
 .search-input {
   flex: 2;
   min-width: 0;
-  border: 1px solid transparent;
+  border: 1px solid #ccc;
   border-radius: 100px;
   padding: 8px 15px;
   font-size: 15px;
   outline: none;
-  background-color: transparent;
+  background-color: #fff;
   color: #333;
   transition: all 0.2s ease;
 }
@@ -218,6 +218,27 @@
   background-position: right 12px top 50%;
   background-size: 10px auto;
   padding-right: 30px;
+}
+
+.filter-button {
+  flex: 0 0 auto;
+  min-width: 100px;
+  padding: 8px 18px;
+  border: 1px solid var(--accent);
+  border-radius: 100px;
+  background-color: #fff;
+  color: #222;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-button:hover,
+.filter-button:focus {
+  background-color: #f9f9f9;
+  border-color: var(--accent);
+  outline: none;
 }
 
 .filter-select:hover,
