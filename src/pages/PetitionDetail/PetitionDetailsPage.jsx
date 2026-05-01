@@ -10,7 +10,7 @@ function PetitionDetailsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSigning, setIsSigning] = useState(false);
   const [error, setError] = useState('');
-  const [isAdmin] = useState(() => authService.isAdmin());
+  const isAdmin = authService.isAdmin();
   const [isAdminMenuOpen, setIsAdminMenuOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isSavingChanges, setIsSavingChanges] = useState(false);
