@@ -81,7 +81,9 @@ export class PetitionsService {
           return (a.votes - b.votes) * direction;
         }
         if (sortBy === 'd') {
-          return (new Date(a.deadline || a.createdAt) - new Date(b.deadline || b.createdAt)) * direction;
+          return (
+            (new Date(a.deadline || a.createdAt) - new Date(b.deadline || b.createdAt)) * direction
+          );
         }
         return (new Date(a.createdAt) - new Date(b.createdAt)) * direction;
       });

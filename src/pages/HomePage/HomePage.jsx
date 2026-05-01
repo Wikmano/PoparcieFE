@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PetitionCard from '../../components/PetitionCard/PetitionCard.jsx';
 import { petitionsService } from '../../services/petitionsService.js';
-import { PETITION_CATEGORIES } from '../../infrastructure/categories.js';
+import { PETITION_CATEGORIES } from '../../constants/categories.js';
 
 function HomePage() {
   const SORT_BY_CREATED_AT = 'createdAt';
@@ -42,10 +42,10 @@ function HomePage() {
       const fetchedPetitions = Array.isArray(data?.data?.petitions)
         ? data.data.petitions
         : Array.isArray(data?.petitions)
-        ? data.petitions
-        : Array.isArray(data)
-        ? data
-        : [];
+          ? data.petitions
+          : Array.isArray(data)
+            ? data
+            : [];
       setPetitions(fetchedPetitions);
     } catch {
       if (!isMountedRef.current) {
@@ -68,7 +68,7 @@ function HomePage() {
     return () => {
       isMountedRef.current = false;
     };
-  }, []);
+  });
 
   const handleSearchClick = () => {
     fetchPetitions();
