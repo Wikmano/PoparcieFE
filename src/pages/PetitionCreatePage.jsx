@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { petitionsService } from '../services/petitionsService.js';
 import './PetitionCreatePage.css';
-import { PETITION_CATEGORIES } from '../../src/infrastructure/categories.js';
+import { PETITION_CATEGORIES } from '../constants/categories.js';
 import { petitionSchema } from '../schemas/petitionSchema.js';
 
 function PetitionCreatePage() {

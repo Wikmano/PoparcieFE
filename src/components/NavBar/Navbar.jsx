@@ -5,15 +5,13 @@ import './Navbar.css';
 
 function Navbar() {
   const navigate = useNavigate();
-  const [username, setUsername] = useState(
-    localStorage.getItem('username') ? localStorage.getItem('username') : null,
-  );
+  const [username, setUsername] = useState(authService.getUserName());
   const [isOrganization, setIsOrganization] = useState(false);
 
   useEffect(() => {
     const handleStorageChange = () => {
-      setUsername(localStorage.getItem('username'));
-      setIsOrganization(localStorage.getItem('role') === 'petition_user' ? true : false);
+      setUsername(authService.getUserName());
+      setIsOrganization(authService.isOrganization());
     };
 
     // Sprawdzaj zmiany w localStorage

@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { BASE_API_URL } from '../AppConfig.js';
+import { ROLE, USERNAME } from '../constants/localStorageKeys.js';
+import { ADMIN_ROLE, NORMAL_USER_ROLE, ORGANIZATION_ROLE } from '../constants/roles.js';
 
 const api = axios.create({
   baseURL: BASE_API_URL + 'petition/user/',
@@ -11,8 +13,8 @@ export const authService = {
     const response = await api.post('register', userData);
     if (response.status === 201) {
       console.log('Registration successful:', response.data);
-      localStorage.setItem('username', userData.username);
-      localStorage.setItem('role', 'petition_user');
+      localStorage.setItem(USERNAME, userData.username);
+      localStorage.setItem(ROLE, userData.role ?? ORGANIZATION_ROLE);
 
       return response.data;
     } else {
@@ -23,8 +25,8 @@ export const authService = {
     const response = await api.post('login', credentials);
 
     if (response.status === 200) {
-      localStorage.setItem('username', credentials.username);
-      localStorage.setItem('role', 'petition_user'); //hardcoded rola - zmienic przy implementacji zkp
+      localStorage.setItem(USERNAME, credentials.username);
+      localStorage.setItem(ROLE, response.data.role ?? ORGANIZATION_ROLE); //hardcoded rola - zmienic przy implementacji zkp
 
       return response.data;
     } else {
@@ -32,7 +34,19 @@ export const authService = {
     }
   },
   logout: () => {
-    localStorage.removeItem('role');
-    localStorage.removeItem('username');
+    localStorage.removeItem(ROLE);
+    localStorage.removeItem(USERNAME);
+  },
+  isAdmin: () => {
+    return localStorage.getItem(ROLE) === ADMIN_ROLE;
+  },
+  isOrganization: () => {
+    return localStorage.getItem(ROLE) === ORGANIZATION_ROLE;
+  },
+  isNormalUser: () => {
+    return localStorage.getItem(ROLE) === NORMAL_USER_ROLE;
+  },
+  getUserName: () => {
+    return localStorage.getItem(USERNAME);
   },
 };

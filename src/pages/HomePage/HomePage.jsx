@@ -1,16 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import PetitionCard from '../../components/PetitionCard/PetitionCard.jsx';
 import { petitionsService } from '../../services/petitionsService.js';
-import { PETITION_CATEGORIES } from '../../infrastructure/categories.js';
+import { PETITION_CATEGORIES } from '../../constants/categories.js';
+
+const SORT_BY_CREATED_AT = 'createdAt';
+const SORT_BY_TITLE = 'a';
+const SORT_BY_VOTES = 'v';
+const SORT_BY_DEADLINE = 'd';
+const SORT_ORDER_ASC = 'asc';
+const SORT_ORDER_DESC = 'desc';
 
 function HomePage() {
-  const SORT_BY_CREATED_AT = 'createdAt';
-  const SORT_BY_TITLE = 'a';
-  const SORT_BY_VOTES = 'v';
-  const SORT_BY_DEADLINE = 'd';
-  const SORT_ORDER_ASC = 'asc';
-  const SORT_ORDER_DESC = 'desc';
-
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy, setSortBy] = useState(SORT_BY_CREATED_AT);
@@ -20,7 +20,7 @@ function HomePage() {
   const [error, setError] = useState('');
   const isMountedRef = useRef(true);
 
-  const fetchPetitions = async (options = {}) => {
+  const fetchPetitions = useCallback(async (options = {}) => {
     try {
       if (!isMountedRef.current) {
         return;
@@ -28,10 +28,10 @@ function HomePage() {
       setError('');
       setIsLoading(true);
       const query = {
-        title: options.title ?? searchQuery,
-        category: options.category ?? selectedCategory,
-        sortBy: options.sortBy ?? sortBy,
-        sortOrder: options.sortOrder ?? sortOrder,
+        title: options.title ?? '',
+        category: options.category ?? 'All',
+        sortBy: options.sortBy ?? SORT_BY_CREATED_AT,
+        sortOrder: options.sortOrder ?? SORT_ORDER_DESC,
         page: 1,
         perPage: 20,
       };
@@ -42,10 +42,10 @@ function HomePage() {
       const fetchedPetitions = Array.isArray(data?.data?.petitions)
         ? data.data.petitions
         : Array.isArray(data?.petitions)
-        ? data.petitions
-        : Array.isArray(data)
-        ? data
-        : [];
+          ? data.petitions
+          : Array.isArray(data)
+            ? data
+            : [];
       setPetitions(fetchedPetitions);
     } catch {
       if (!isMountedRef.current) {
@@ -58,32 +58,52 @@ function HomePage() {
         setIsLoading(false);
       }
     }
-  };
+  }, []);
 
   useEffect(() => {
     isMountedRef.current = true;
 
-    fetchPetitions();
+    fetchPetitions({
+      title: '',
+      category: 'All',
+      sortBy: SORT_BY_CREATED_AT,
+      sortOrder: SORT_ORDER_DESC,
+    });
 
     return () => {
       isMountedRef.current = false;
     };
-  }, []);
+  }, [fetchPetitions]);
 
-  const handleSearchClick = () => {
-    fetchPetitions();
+  const handleSearchClick = async () => {
+    await fetchPetitions({
+      title: searchQuery,
+      category: selectedCategory,
+      sortBy,
+      sortOrder,
+    });
     setSearchQuery('');
   };
 
-  const handleCategoryChange = (category) => {
+  const handleCategoryChange = async (category) => {
     setSelectedCategory(category);
-    fetchPetitions({ category });
+    await fetchPetitions({
+      title: searchQuery,
+      category,
+      sortBy,
+      sortOrder,
+    });
   };
 
-  const handleToggleSortOrder = () => {
+  const handleToggleSortOrder = async () => {
     const nextOrder = sortOrder === SORT_ORDER_DESC ? SORT_ORDER_ASC : SORT_ORDER_DESC;
     setSortOrder(nextOrder);
-    fetchPetitions({ sortOrder: nextOrder });
+    await fetchPetitions({
+      title: searchQuery,
+      category: selectedCategory,
+      sortBy,
+      sortOrder: nextOrder,
+    });
   };
 
   return (
