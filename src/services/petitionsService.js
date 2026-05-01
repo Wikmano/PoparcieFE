@@ -3,7 +3,7 @@ import { BASE_API_URL, USE_MOCK_PETITIONS } from '../AppConfig.js';
 
 const mockPetitionsSeed = [
   {
-    id: 1,
+    _id: 1,
     title: 'Petycja o ochronę środowiska',
     author: 'Jan Kowalski',
     description: 'Wiecej terenow zielonych i mniej zanieczyszczen w miescie.',
@@ -13,7 +13,7 @@ const mockPetitionsSeed = [
     createdAt: '2026-03-15',
   },
   {
-    id: 2,
+    _id: 2,
     title: 'Petycja o lepsze drogi',
     author: 'Anna Nowak',
     description: 'Remont kluczowych drog i bezpieczniejsze przejscia dla pieszych.',
@@ -23,7 +23,7 @@ const mockPetitionsSeed = [
     createdAt: '2026-03-16',
   },
   {
-    id: 3,
+    _id: 3,
     title: 'Petycja o edukację',
     author: 'Piotr Wiśniewski',
     description: 'Nowoczesne wyposazenie szkol i darmowe zajecia dodatkowe.',
@@ -33,7 +33,7 @@ const mockPetitionsSeed = [
     createdAt: '2026-03-17',
   },
   {
-    id: 4,
+    _id: 4,
     title: 'Petycja o zdrowie',
     author: 'Maria Zielińska',
     description: 'Lepszy dostep do profilaktyki i krotsze kolejki do specjalistow.',
@@ -108,7 +108,7 @@ export class PetitionsService {
   async getPetitionById(id) {
     if (this.useMock) {
       const petitionId = Number(id);
-      return this.mockPetitions.find((petition) => petition.id === petitionId) || null;
+      return this.mockPetitions.find((petition) => petition._id === petitionId) || null;
     }
 
     const response = await this.api.get(`/${id}`);
