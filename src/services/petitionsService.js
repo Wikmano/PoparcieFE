@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { BASE_API_URL, USE_MOCK_PETITIONS } from '../AppConfig.js';
+import {authService} from "./authService.js";
 
 const mockPetitionsSeed = [
   {
@@ -44,7 +45,7 @@ const mockPetitionsSeed = [
   },
 ];
 
-export class PetitionsService {
+class PetitionsService {
   constructor(useMock = USE_MOCK_PETITIONS) {
     this.useMock = useMock;
     this.mockPetitions = mockPetitionsSeed.map((petition) => ({ ...petition }));
@@ -137,6 +138,73 @@ export class PetitionsService {
     });
 
     return response.data;
+  }
+
+  async updatePetition(id, petitionData) {
+    if (!authService.isAdmin()){
+      throw new Error('Not authorized!');
+    }
+
+    if (this.useMock) {
+      const petitionId = Number(id);
+      const index = this.mockPetitions.findIndex((petition) => petition._id === petitionId);
+
+      if (index === -1) {
+        throw new Error('Petycja nie została znaleziona');
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      const updatedPetition = {
+        ...this.mockPetitions[index],
+        ...petitionData,
+        description: petitionData.longDescription ?? petitionData.description,
+        longDescription: petitionData.longDescription ?? petitionData.description,
+      };
+
+      this.mockPetitions[index] = updatedPetition;
+      return updatedPetition;
+    }
+
+    const response = await this.api.patch(`/${id}`, petitionData, {
+      withCredentials: true,
+    });
+
+    if (response.status === 200) {
+      return response.data;
+    }
+
+    throw new Error(response.statusText);
+  }
+
+  async archivePetition(id) {
+    if (!authService.isAdmin()){
+      throw new Error('Not authorized!');
+    }
+
+    if (this.useMock) {
+      const petitionId = Number(id);
+      const index = this.mockPetitions.findIndex((petition) => petition._id === petitionId);
+      if (index === -1) {
+        throw new Error('Petycja nie została znaleziona');
+      }
+      // Simulate server delay
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      // Remove petition from mock storage
+      this.mockPetitions.splice(index, 1);
+
+      return;
+    }
+
+    const response = await this.api.post(`/${id}/archive`, {}, {
+      withCredentials: true,
+    });
+
+    if (response.status === 200) {
+      return;
+    }
+
+    throw new Error(response.statusText);
   }
 }
 

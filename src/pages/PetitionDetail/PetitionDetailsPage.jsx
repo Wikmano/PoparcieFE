@@ -13,6 +13,7 @@ function PetitionDetailsPage() {
   const [isAdmin] = useState(() => authService.isAdmin());
   const [isAdminMenuOpen, setIsAdminMenuOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isSavingChanges, setIsSavingChanges] = useState(false);
   const [adminMessage, setAdminMessage] = useState('');
   const [editableFields, setEditableFields] = useState({
     title: '',
@@ -82,19 +83,59 @@ function PetitionDetailsPage() {
     }));
   };
 
-  const handleSaveChanges = () => {
-    setPetition((prevPetition) => ({
-      ...prevPetition,
+  const handleSaveChanges = async () => {
+    if (!petition) {
+      return;
+    }
+
+    const payload = {
       title: editableFields.title.trim(),
       longDescription: editableFields.longDescription.trim(),
-      description: editableFields.longDescription.trim(),
-    }));
-    setIsEditing(false);
-    setAdminMessage('Zmiany zapisane lokalnie. Integracja API zostanie dodana później.');
+    };
+
+    try {
+      setIsSavingChanges(true);
+      setAdminMessage('');
+      const petitionId = petition._id ?? petition.id ?? id;
+      const result = await petitionsService.updatePetition(petitionId, payload);
+      const updatedPetition = result?.data ?? result;
+
+      setPetition((prevPetition) => ({
+        ...prevPetition,
+        ...updatedPetition,
+        title: updatedPetition?.title ?? payload.title,
+        longDescription:
+          updatedPetition?.longDescription ?? updatedPetition?.description ?? payload.longDescription,
+        description:
+          updatedPetition?.description ?? updatedPetition?.longDescription ?? payload.longDescription,
+      }));
+      setIsEditing(false);
+      setAdminMessage('Zmiany zostały zapisane.');
+    } catch (err) {
+      setAdminMessage(err?.response?.data?.message || 'Nie udało się zapisać zmian.');
+    } finally {
+      setIsSavingChanges(false);
+    }
   };
 
-  const handleDeleteClick = () => {
-    setAdminMessage('Usuwanie petycji nie jest jeszcze zaimplementowane.');
+  const handleDeleteClick = async () => {
+    if (!petition) {
+      return;
+    }
+
+    try {
+      setIsSavingChanges(true);
+      setAdminMessage('');
+      const petitionId = petition._id ?? petition.id ?? id;
+      await petitionsService.archivePetition(petitionId);
+
+      setIsEditing(false);
+      setAdminMessage('Petycja została zarchizowana. Jej id: ' + petitionId);
+    } catch (err) {
+      setAdminMessage(err?.response?.data?.message || 'Nie udało się zapisać zmian.');
+    } finally {
+      setIsSavingChanges(false);
+    }
   };
 
   if (isLoading) {
@@ -211,8 +252,13 @@ function PetitionDetailsPage() {
             )}
 
             {isEditing && (
-              <button className="save-changes-button" type="button" onClick={handleSaveChanges}>
-                Zapisz zmiany
+              <button
+                className="save-changes-button"
+                type="button"
+                onClick={handleSaveChanges}
+                disabled={isSavingChanges}
+              >
+                {isSavingChanges ? 'Zapisywanie...' : 'Zapisz zmiany'}
               </button>
             )}
 
