@@ -242,6 +242,28 @@
   transform: scale(1.05);
 }
 
+.sort-button {
+  flex: 0 0 auto;
+  min-width: 100px;
+  padding: 8px 18px;
+  border: 1px solid var(--accent);
+  border-radius: 100px;
+  background-color: #f8f9fa;
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sort-button:hover,
+.sort-button:focus {
+  background-color: #e9ecef;
+  border-color: var(--accent);
+  outline: none;
+  transform: scale(1.05);
+}
+
 .custom-dropdown {
   flex: 1;
   min-width: 0;

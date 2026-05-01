@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import PetitionCard from '../../components/PetitionCard/PetitionCard.jsx';
 import { petitionsService } from '../../services/petitionsService.js';
-import { PETITION_CATEGORIES } from '../../infrastructure/categories.js';
+import { PETITION_CATEGORIES } from '../../constants/categories.js';
 
 function CustomDropdown({ options, value, onChange, placeholder, className }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,15 +23,11 @@ function CustomDropdown({ options, value, onChange, placeholder, className }) {
     setIsOpen(false);
   };
 
-  const currentLabel = options.find(opt => opt.value === value)?.label || placeholder;
+  const currentLabel = options.find((opt) => opt.value === value)?.label || placeholder;
 
   return (
     <div className={`custom-dropdown ${className}`} ref={dropdownRef}>
-      <button
-        type="button"
-        className="dropdown-trigger"
-        onClick={() => setIsOpen(!isOpen)}
-      >
+      <button type="button" className="dropdown-trigger" onClick={() => setIsOpen(!isOpen)}>
         <span>{currentLabel}</span>
         <span className={`dropdown-arrow ${isOpen ? 'open' : ''}`}>▼</span>
       </button>
@@ -61,17 +57,16 @@ function HomePage() {
 
   const categoryOptions = [
     { value: 'All', label: 'Wszystkie kategorie' },
-    ...PETITION_CATEGORIES.map(category => ({ value: category, label: category }))
+    ...PETITION_CATEGORIES.map((category) => ({ value: category, label: category })),
   ];
 
   const sortOptions = [
     { value: SORT_BY_CREATED_AT, label: 'Data utworzenia' },
     { value: SORT_BY_TITLE, label: 'Tytuł' },
     { value: SORT_BY_VOTES, label: 'Głosy' },
-    { value: SORT_BY_DEADLINE, label: 'Termin' }
+    { value: SORT_BY_DEADLINE, label: 'Termin' },
   ];
 
-function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy, setSortBy] = useState(SORT_BY_CREATED_AT);
@@ -93,8 +88,6 @@ function HomePage() {
         category: options.category ?? 'All',
         sortBy: options.sortBy ?? SORT_BY_CREATED_AT,
         sortOrder: options.sortOrder ?? SORT_ORDER_DESC,
-        page: 1,
-        perPage: 20,
       };
       const data = await petitionsService.getAllPetitions(query);
       if (!isMountedRef.current) {
@@ -198,7 +191,7 @@ function HomePage() {
             placeholder="Sortuj według"
             className="filter-dropdown"
           />
-          <button type="button" className="filter-button" onClick={handleToggleSortOrder}>
+          <button type="button" className="sort-button" onClick={handleToggleSortOrder}>
             {sortOrder === SORT_ORDER_DESC ? 'Rosnąco' : 'Malejąco'}
           </button>
         </div>
