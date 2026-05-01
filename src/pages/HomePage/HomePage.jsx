@@ -3,6 +3,54 @@ import PetitionCard from '../../components/PetitionCard/PetitionCard.jsx';
 import { petitionsService } from '../../services/petitionsService.js';
 import { PETITION_CATEGORIES } from '../../infrastructure/categories.js';
 
+function CustomDropdown({ options, value, onChange, placeholder, className }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleSelect = (optionValue) => {
+    onChange(optionValue);
+    setIsOpen(false);
+  };
+
+  const currentLabel = options.find(opt => opt.value === value)?.label || placeholder;
+
+  return (
+    <div className={`custom-dropdown ${className}`} ref={dropdownRef}>
+      <button
+        type="button"
+        className="dropdown-trigger"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span>{currentLabel}</span>
+        <span className={`dropdown-arrow ${isOpen ? 'open' : ''}`}>▼</span>
+      </button>
+      <div className={`dropdown-menu ${isOpen ? 'open' : ''}`}>
+        {options.map((option) => (
+          <button
+            key={option.value}
+            type="button"
+            className={`dropdown-option ${value === option.value ? 'selected' : ''}`}
+            onClick={() => handleSelect(option.value)}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function HomePage() {
   const SORT_BY_CREATED_AT = 'createdAt';
   const SORT_BY_TITLE = 'a';
@@ -10,6 +58,18 @@ function HomePage() {
   const SORT_BY_DEADLINE = 'd';
   const SORT_ORDER_ASC = 'asc';
   const SORT_ORDER_DESC = 'desc';
+
+  const categoryOptions = [
+    { value: 'All', label: 'Wszystkie kategorie' },
+    ...PETITION_CATEGORIES.map(category => ({ value: category, label: category }))
+  ];
+
+  const sortOptions = [
+    { value: SORT_BY_CREATED_AT, label: 'Data utworzenia' },
+    { value: SORT_BY_TITLE, label: 'Tytuł' },
+    { value: SORT_BY_VOTES, label: 'Głosy' },
+    { value: SORT_BY_DEADLINE, label: 'Termin' }
+  ];
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -103,30 +163,22 @@ function HomePage() {
           <button type="button" className="filter-button" onClick={handleSearchClick}>
             Szukaj
           </button>
-          <select
+          <CustomDropdown
+            options={categoryOptions}
             value={selectedCategory}
-            onChange={(e) => handleCategoryChange(e.target.value)}
-            className="filter-select"
-          >
-            <option value="All">Wszystkie kategorie</option>
-            {PETITION_CATEGORIES.map((category) => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
-          <select
+            onChange={handleCategoryChange}
+            placeholder="Wybierz kategorię"
+            className="filter-dropdown"
+          />
+          <CustomDropdown
+            options={sortOptions}
             value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="filter-select"
-          >
-            <option value={SORT_BY_CREATED_AT}>Data utworzenia</option>
-            <option value={SORT_BY_TITLE}>Tytuł</option>
-            <option value={SORT_BY_VOTES}>Głosy</option>
-            <option value={SORT_BY_DEADLINE}>Termin</option>
-          </select>
+            onChange={setSortBy}
+            placeholder="Sortuj według"
+            className="filter-dropdown"
+          />
           <button type="button" className="filter-button" onClick={handleToggleSortOrder}>
-            {sortOrder === SORT_ORDER_DESC ? 'Pokaż od góry' : 'Pokaż od dołu'}
+            {sortOrder === SORT_ORDER_DESC ? 'Rosnąco' : 'Malejąco'}
           </button>
         </div>
       </div>

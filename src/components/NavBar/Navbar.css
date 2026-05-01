@@ -174,7 +174,7 @@
 }
 
 .dropdown-menu {
-  display: none;
+  display: block;
   position: absolute;
   top: 100%;
   right: 0;
@@ -187,10 +187,16 @@
   min-width: 300px;
   box-shadow: var(--shadow);
   z-index: 1001;
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .dropdown:hover .dropdown-menu {
-  display: block;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 .dropdown-menu li {

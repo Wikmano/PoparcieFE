@@ -58,6 +58,16 @@ body {
   box-sizing: border-box;
 }
 
+/* Hide scrollbars */
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
 h1,
 h2 {
   font-family: var(--heading);
