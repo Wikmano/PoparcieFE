@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { BASE_API_URL, USE_MOCK_PETITIONS } from '../AppConfig.js';
-import {authService} from "./authService.js";
+import { authService } from './authService.js';
 
 const mockPetitionsSeed = [
   {
@@ -141,7 +141,7 @@ class PetitionsService {
   }
 
   async updatePetition(id, petitionData) {
-    if (!authService.isAdmin()){
+    if (!authService.isAdmin()) {
       throw new Error('Not authorized!');
     }
 
@@ -177,7 +177,7 @@ class PetitionsService {
   }
 
   async archivePetition(id) {
-    if (!authService.isAdmin()){
+    if (!authService.isAdmin()) {
       throw new Error('Not authorized!');
     }
 
@@ -196,9 +196,13 @@ class PetitionsService {
       return;
     }
 
-    const response = await this.api.post(`/${id}/archive`, {}, {
-      withCredentials: true,
-    });
+    const response = await this.api.post(
+      `/${id}/archive`,
+      {},
+      {
+        withCredentials: true,
+      },
+    );
 
     if (response.status === 200) {
       return;

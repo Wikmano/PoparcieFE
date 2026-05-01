@@ -105,9 +105,13 @@ function PetitionDetailsPage() {
         ...updatedPetition,
         title: updatedPetition?.title ?? payload.title,
         longDescription:
-          updatedPetition?.longDescription ?? updatedPetition?.description ?? payload.longDescription,
+          updatedPetition?.longDescription ??
+          updatedPetition?.description ??
+          payload.longDescription,
         description:
-          updatedPetition?.description ?? updatedPetition?.longDescription ?? payload.longDescription,
+          updatedPetition?.description ??
+          updatedPetition?.longDescription ??
+          payload.longDescription,
       }));
       setIsEditing(false);
       setAdminMessage('Zmiany zostały zapisane.');
