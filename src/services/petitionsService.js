@@ -1,9 +1,10 @@
 import axios from 'axios';
 import { BASE_API_URL, USE_MOCK_PETITIONS } from '../AppConfig.js';
+import { authService } from './authService.js';
 
 const mockPetitionsSeed = [
   {
-    id: 1,
+    _id: 1,
     title: 'Petycja o ochronę środowiska',
     author: 'Jan Kowalski',
     description: 'Wiecej terenow zielonych i mniej zanieczyszczen w miescie.',
@@ -13,7 +14,7 @@ const mockPetitionsSeed = [
     createdAt: '2026-03-15',
   },
   {
-    id: 2,
+    _id: 2,
     title: 'Petycja o lepsze drogi',
     author: 'Anna Nowak',
     description: 'Remont kluczowych drog i bezpieczniejsze przejscia dla pieszych.',
@@ -23,7 +24,7 @@ const mockPetitionsSeed = [
     createdAt: '2026-03-16',
   },
   {
-    id: 3,
+    _id: 3,
     title: 'Petycja o edukację',
     author: 'Piotr Wiśniewski',
     description: 'Nowoczesne wyposazenie szkol i darmowe zajecia dodatkowe.',
@@ -33,7 +34,7 @@ const mockPetitionsSeed = [
     createdAt: '2026-03-17',
   },
   {
-    id: 4,
+    _id: 4,
     title: 'Petycja o zdrowie',
     author: 'Maria Zielińska',
     description: 'Lepszy dostep do profilaktyki i krotsze kolejki do specjalistow.',
@@ -44,7 +45,7 @@ const mockPetitionsSeed = [
   },
 ];
 
-export class PetitionsService {
+class PetitionsService {
   constructor(useMock = USE_MOCK_PETITIONS) {
     this.useMock = useMock;
     this.mockPetitions = mockPetitionsSeed.map((petition) => ({ ...petition }));
@@ -81,7 +82,9 @@ export class PetitionsService {
           return (a.votes - b.votes) * direction;
         }
         if (sortBy === 'd') {
-          return (new Date(a.deadline || a.createdAt) - new Date(b.deadline || b.createdAt)) * direction;
+          return (
+            (new Date(a.deadline || a.createdAt) - new Date(b.deadline || b.createdAt)) * direction
+          );
         }
         return (new Date(a.createdAt) - new Date(b.createdAt)) * direction;
       });
@@ -106,7 +109,7 @@ export class PetitionsService {
   async getPetitionById(id) {
     if (this.useMock) {
       const petitionId = Number(id);
-      return this.mockPetitions.find((petition) => petition.id === petitionId) || null;
+      return this.mockPetitions.find((petition) => petition._id === petitionId) || null;
     }
 
     const response = await this.api.get(`/${id}`);
@@ -135,6 +138,77 @@ export class PetitionsService {
     });
 
     return response.data;
+  }
+
+  async updatePetition(id, petitionData) {
+    if (!authService.isAdmin()) {
+      throw new Error('Not authorized!');
+    }
+
+    if (this.useMock) {
+      const petitionId = Number(id);
+      const index = this.mockPetitions.findIndex((petition) => petition._id === petitionId);
+
+      if (index === -1) {
+        throw new Error('Petycja nie została znaleziona');
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      const updatedPetition = {
+        ...this.mockPetitions[index],
+        ...petitionData,
+        description: petitionData.longDescription ?? petitionData.description,
+        longDescription: petitionData.longDescription ?? petitionData.description,
+      };
+
+      this.mockPetitions[index] = updatedPetition;
+      return updatedPetition;
+    }
+
+    const response = await this.api.patch(`/${id}`, petitionData, {
+      withCredentials: true,
+    });
+
+    if (response.status === 200) {
+      return response.data;
+    }
+
+    throw new Error(response.statusText);
+  }
+
+  async archivePetition(id) {
+    if (!authService.isAdmin()) {
+      throw new Error('Not authorized!');
+    }
+
+    if (this.useMock) {
+      const petitionId = Number(id);
+      const index = this.mockPetitions.findIndex((petition) => petition._id === petitionId);
+      if (index === -1) {
+        throw new Error('Petycja nie została znaleziona');
+      }
+      // Simulate server delay
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
+      // Remove petition from mock storage
+      this.mockPetitions.splice(index, 1);
+
+      return;
+    }
+
+    const response = await this.api.post(
+      `/${id}/archive`,
+      {},
+      {
+        withCredentials: true,
+      },
+    );
+
+    if (response.status === 200) {
+      return;
+    }
+
+    throw new Error(response.statusText);
   }
 }
 

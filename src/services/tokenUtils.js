@@ -1,5 +1,3 @@
-import { InfrastructureConstants } from '../infrastructure/Constants.js';
-
 export function decodeToken(token) {
   if (!token) return null;
 
