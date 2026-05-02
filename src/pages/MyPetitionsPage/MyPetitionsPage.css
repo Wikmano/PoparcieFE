@@ -9,7 +9,10 @@
   margin: 0 auto;
   padding: 3rem 2rem;
   text-align: left;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
 .dashboard-header-wrapper {
@@ -43,7 +46,9 @@
   border-radius: 6px;
   font-weight: 500;
   font-size: 1rem;
-  transition: background-color 0.2s, transform 0.2s;
+  transition:
+    background-color 0.2s,
+    transform 0.2s;
   border: none;
   cursor: pointer;
 }
@@ -70,7 +75,7 @@
   display: flex;
   align-items: center;
   gap: 1.25rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .summary-icon {
@@ -126,7 +131,8 @@
   font-size: 1.5rem;
 }
 
-.loading, .error-message {
+.loading,
+.error-message {
   text-align: center;
   margin-top: 5rem;
   font-size: 1.2rem;

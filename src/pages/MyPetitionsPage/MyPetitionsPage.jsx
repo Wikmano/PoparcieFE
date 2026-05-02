@@ -47,7 +47,14 @@ const MyPetitionsPage = () => {
         <div className="dashboard-summary">
           <div className="summary-card">
             <div className="summary-icon icon-primary">
-              <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none">
+              <svg
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+                stroke="currentColor"
+                strokeWidth="2"
+                fill="none"
+              >
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                 <circle cx="12" cy="12" r="3"></circle>
               </svg>
@@ -60,7 +67,14 @@ const MyPetitionsPage = () => {
 
           <div className="summary-card">
             <div className="summary-icon icon-secondary">
-              <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" strokeWidth="2" fill="none">
+              <svg
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+                stroke="currentColor"
+                strokeWidth="2"
+                fill="none"
+              >
                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                 <line x1="9" y1="3" x2="9" y2="21"></line>
               </svg>
@@ -76,7 +90,9 @@ const MyPetitionsPage = () => {
           <div className="no-petitions">
             <h3>Brak petycji</h3>
             <p>Nie utworzyłeś jeszcze żadnych petycji.</p>
-            <Link to="/petition/create" className="dashboard-create-btn">Utwórz petycję</Link>
+            <Link to="/petition/create" className="dashboard-create-btn">
+              Utwórz petycję
+            </Link>
           </div>
         ) : (
           <div className="dashboard-petitions-grid">

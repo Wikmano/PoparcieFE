@@ -152,10 +152,6 @@ class PetitionsService {
   }
 
   async updatePetition(id, petitionData) {
-    if (!authService.isAdmin()) {
-      throw new Error('Not authorized!');
-    }
-
     if (this.useMock) {
       const petitionId = Number(id);
       const index = this.mockPetitions.findIndex((petition) => petition._id === petitionId);
@@ -188,10 +184,6 @@ class PetitionsService {
   }
 
   async archivePetition(id) {
-    if (!authService.isAdmin()) {
-      throw new Error('Not authorized!');
-    }
-
     if (this.useMock) {
       const petitionId = Number(id);
       const index = this.mockPetitions.findIndex((petition) => petition._id === petitionId);
@@ -207,7 +199,7 @@ class PetitionsService {
       return;
     }
 
-    const response = await this.api.post(
+    const response = await this.api.patch(
       `/${id}/archive`,
       {},
       {

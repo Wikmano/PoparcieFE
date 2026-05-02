@@ -8,7 +8,10 @@
   padding: 20px;
   text-decoration: none;
   color: var(--text, #4a4a4a);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
   min-height: 260px;
   height: 100%;
   width: 100%;
@@ -28,19 +31,22 @@
   border: 1px solid #e5e7eb;
   border-top: 1px solid #e5e7eb;
   border-radius: 10px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .petition-card.dashboard-variant:hover {
   transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   border-color: #d1d5db;
 }
 
 .petition-card.dashboard-variant h3 {
   font-size: 1.1rem;
   color: #111827;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
   margin-bottom: 0;
   -webkit-line-clamp: 2;
 }
@@ -62,13 +68,81 @@
 }
 
 .status-archived {
-  background-color: #f3f4f6;
-  color: #6b7280;
+  background-color: #fef9c3; /* light yellow bg */
+  color: #b45309; /* dark yellow/orange text */
 }
 
 .status-expired {
   background-color: #fff1f0;
   color: #cb160e;
+}
+
+.archive-button-card {
+  background-color: #fff1f0;
+  border: 1px solid #ffccc7;
+  color: #cb160e;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.archive-button-card:hover:not(:disabled) {
+  background-color: #cb160e;
+  color: #ffffff;
+}
+
+.archive-button-card:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.archive-confirm-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff1f0;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #ffccc7;
+  z-index: 10;
+}
+
+.archive-confirm-text {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #cb160e;
+}
+
+.archive-btn-yes, .archive-btn-no {
+  background: white;
+  border: 1px solid #ffccc7;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 6px;
+  transition: all 0.2s;
+}
+
+.archive-btn-yes {
+  color: #cb160e;
+}
+
+.archive-btn-yes:hover:not(:disabled) {
+  background: #cb160e;
+  color: white;
+}
+
+.archive-btn-no {
+  color: #666;
+}
+
+.archive-btn-no:hover:not(:disabled) {
+  background: #e5e7eb;
 }
 
 .petition-card.dashboard-variant .petition-footer {
