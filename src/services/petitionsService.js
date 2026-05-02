@@ -106,6 +106,17 @@ class PetitionsService {
     return response.data;
   }
 
+  async getMyPetitions() {
+    if (this.useMock) {
+      return { data: this.mockPetitions.slice(0, 2) };
+    }
+
+    const response = await this.api.get('/me', {
+      withCredentials: true,
+    });
+    return response.data;
+  }
+
   async getPetitionById(id) {
     if (this.useMock) {
       const petitionId = Number(id);

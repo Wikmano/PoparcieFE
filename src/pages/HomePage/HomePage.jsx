@@ -205,7 +205,7 @@ function PetitionList({ petitions }) {
   return (
     <div className="petition-grid">
       {petitions.map((petition) => (
-        <PetitionCard key={petition.id} petition={petition} />
+        <PetitionCard key={petition._id || petition.id} petition={petition} />
       ))}
     </div>
   );
