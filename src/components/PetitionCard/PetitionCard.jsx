@@ -15,10 +15,10 @@ function PetitionCard({ petition, hideAuthor, variant = 'default' }) {
     switch (status) {
       case 'active':
         return 'Aktywna';
+      case 'closed':
+        return 'Zamknięta';
       case 'archived':
         return 'Zarchiwizowana';
-      case 'expired':
-        return 'Zakończona';
       default:
         return status || 'Nieznany';
     }
@@ -103,18 +103,10 @@ function PetitionCard({ petition, hideAuthor, variant = 'default' }) {
             {localStatus === 'active' && isConfirmingArchive && (
               <div className="archive-confirm-box">
                 <span className="archive-confirm-text">Czy na pewno?</span>
-                <button
-                  onClick={confirmArchive}
-                  disabled={isArchiving}
-                  className="archive-btn-yes"
-                >
+                <button onClick={confirmArchive} disabled={isArchiving} className="archive-btn-yes">
                   {isArchiving ? '...' : 'Tak'}
                 </button>
-                <button
-                  onClick={cancelArchive}
-                  disabled={isArchiving}
-                  className="archive-btn-no"
-                >
+                <button onClick={cancelArchive} disabled={isArchiving} className="archive-btn-no">
                   Nie
                 </button>
               </div>

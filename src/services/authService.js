@@ -14,7 +14,7 @@ export const authService = {
     if (response.status === 201) {
       console.log('Registration successful:', response.data);
       localStorage.setItem(USERNAME, userData.username);
-      localStorage.setItem(ROLE, userData.role ?? ORGANIZATION_ROLE);
+      localStorage.setItem(ROLE, userData.role); //?? ORGANIZATION_ROLE);
 
       return response.data;
     } else {
@@ -26,7 +26,7 @@ export const authService = {
 
     if (response.status === 200) {
       localStorage.setItem(USERNAME, credentials.username);
-      localStorage.setItem(ROLE, response.data.role ?? ORGANIZATION_ROLE); //hardcoded rola - zmienic przy implementacji zkp
+      localStorage.setItem(ROLE, response.data.role); //?? ORGANIZATION_ROLE); //hardcoded rola - zmienic przy implementacji zkp
 
       return response.data;
     } else {

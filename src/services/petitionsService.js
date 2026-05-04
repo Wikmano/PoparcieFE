@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { BASE_API_URL, USE_MOCK_PETITIONS } from '../AppConfig.js';
-import { authService } from './authService.js';
 
 const mockPetitionsSeed = [
   {
@@ -11,6 +10,7 @@ const mockPetitionsSeed = [
     votes: 150,
     goal: 500,
     category: 'Ekologia',
+    status: 'active',
     createdAt: '2026-03-15',
   },
   {
@@ -21,6 +21,7 @@ const mockPetitionsSeed = [
     votes: 200,
     goal: 400,
     category: 'Infrastruktura',
+    status: 'active',
     createdAt: '2026-03-16',
   },
   {
@@ -31,6 +32,7 @@ const mockPetitionsSeed = [
     votes: 80,
     goal: 300,
     category: 'Edukacja',
+    status: 'closed',
     createdAt: '2026-03-17',
   },
   {
@@ -41,6 +43,7 @@ const mockPetitionsSeed = [
     votes: 120,
     goal: 600,
     category: 'Zdrowie',
+    status: 'archived',
     createdAt: '2026-03-18',
   },
 ];
@@ -55,7 +58,7 @@ class PetitionsService {
   }
 
   async getAllPetitions(query = {}) {
-    const { title, category, page = 1, perPage = 20, sortBy, sortOrder } = query;
+    const { title, category, status, page = 1, perPage = 20, sortBy, sortOrder } = query;
 
     if (this.useMock) {
       let filtered = this.mockPetitions.map((petition) => ({ ...petition }));
@@ -71,6 +74,10 @@ class PetitionsService {
 
       if (category && category !== 'All') {
         filtered = filtered.filter((petition) => petition.category === category);
+      }
+
+      if (status && status !== 'All') {
+        filtered = filtered.filter((petition) => petition.status === status);
       }
 
       const direction = sortOrder === 'desc' ? -1 : 1;
@@ -97,6 +104,7 @@ class PetitionsService {
     const params = {};
     if (title) params.title = title;
     if (category && category !== 'All') params.category = category;
+    if (status && status !== 'All') params.status = status;
     if (sortBy) params.sortBy = sortBy;
     if (sortOrder) params.sortOrder = sortOrder;
     params.page = page;
@@ -130,6 +138,7 @@ class PetitionsService {
   async createPetition(petitionData) {
     if (this.useMock) {
       const newPetition = {
+        _id: this.mockPetitions.length + 1,
         title: petitionData.title,
         shortDescription: petitionData.shortDescription,
         description: petitionData.longDescription, // Map to existing field for safety
@@ -137,6 +146,7 @@ class PetitionsService {
         goal: petitionData.goal,
         votes: 0,
         category: 'Inne',
+        status: 'active',
         createdAt: new Date().toISOString().split('T')[0],
       };
 

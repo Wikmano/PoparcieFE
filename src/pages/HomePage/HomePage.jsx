@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import PetitionCard from '../../components/PetitionCard/PetitionCard.jsx';
 import { petitionsService } from '../../services/petitionsService.js';
+import { authService } from '../../services/authService.js';
 import { PETITION_CATEGORIES } from '../../constants/categories.js';
 
 function CustomDropdown({ options, value, onChange, placeholder, className }) {
@@ -69,12 +70,21 @@ function HomePage() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedStatus, setSelectedStatus] = useState('All');
   const [sortBy, setSortBy] = useState(SORT_BY_CREATED_AT);
   const [sortOrder, setSortOrder] = useState(SORT_ORDER_DESC);
   const [petitions, setPetitions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const isMountedRef = useRef(true);
+  const isAdmin = authService.isAdmin();
+
+  const statusOptions = [
+    { value: 'All', label: 'Wszystkie statusy' },
+    { value: 'active', label: 'Aktywne' },
+    { value: 'closed', label: 'Zamknięte' },
+    ...(isAdmin ? [{ value: 'archived', label: 'Zarchiwizowane' }] : []),
+  ];
 
   const fetchPetitions = useCallback(async (options = {}) => {
     try {
@@ -86,6 +96,7 @@ function HomePage() {
       const query = {
         title: options.title ?? '',
         category: options.category ?? 'All',
+        status: options.status ?? 'All',
         sortBy: options.sortBy ?? SORT_BY_CREATED_AT,
         sortOrder: options.sortOrder ?? SORT_ORDER_DESC,
       };
@@ -120,6 +131,7 @@ function HomePage() {
     fetchPetitions({
       title: '',
       category: 'All',
+      status: 'All',
       sortBy: SORT_BY_CREATED_AT,
       sortOrder: SORT_ORDER_DESC,
     });
@@ -133,6 +145,7 @@ function HomePage() {
     await fetchPetitions({
       title: searchQuery,
       category: selectedCategory,
+      status: selectedStatus,
       sortBy,
       sortOrder,
     });
@@ -144,6 +157,18 @@ function HomePage() {
     await fetchPetitions({
       title: searchQuery,
       category,
+      status: selectedStatus,
+      sortBy,
+      sortOrder,
+    });
+  };
+
+  const handleStatusChange = async (status) => {
+    setSelectedStatus(status);
+    await fetchPetitions({
+      title: searchQuery,
+      category: selectedCategory,
+      status,
       sortBy,
       sortOrder,
     });
@@ -155,6 +180,7 @@ function HomePage() {
     await fetchPetitions({
       title: searchQuery,
       category: selectedCategory,
+      status: selectedStatus,
       sortBy,
       sortOrder: nextOrder,
     });
@@ -182,6 +208,13 @@ function HomePage() {
             value={selectedCategory}
             onChange={handleCategoryChange}
             placeholder="Wybierz kategorię"
+            className="filter-dropdown"
+          />
+          <CustomDropdown
+            options={statusOptions}
+            value={selectedStatus}
+            onChange={handleStatusChange}
+            placeholder="Wybierz status"
             className="filter-dropdown"
           />
           <CustomDropdown

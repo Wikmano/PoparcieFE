@@ -117,7 +117,8 @@
   color: #cb160e;
 }
 
-.archive-btn-yes, .archive-btn-no {
+.archive-btn-yes,
+.archive-btn-no {
   background: white;
   border: 1px solid #ffccc7;
   border-radius: 4px;
