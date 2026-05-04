@@ -70,7 +70,7 @@ function HomePage() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [selectedStatus, setSelectedStatus] = useState('All');
+  const [selectedStatus, setSelectedStatus] = useState('active');
   const [sortBy, setSortBy] = useState(SORT_BY_CREATED_AT);
   const [sortOrder, setSortOrder] = useState(SORT_ORDER_DESC);
   const [petitions, setPetitions] = useState([]);
@@ -80,7 +80,6 @@ function HomePage() {
   const isAdmin = authService.isAdmin();
 
   const statusOptions = [
-    { value: 'All', label: 'Wszystkie statusy' },
     { value: 'active', label: 'Aktywne' },
     { value: 'closed', label: 'Zamknięte' },
     ...(isAdmin ? [{ value: 'archived', label: 'Zarchiwizowane' }] : []),
@@ -96,7 +95,7 @@ function HomePage() {
       const query = {
         title: options.title ?? '',
         category: options.category ?? 'All',
-        status: options.status ?? 'All',
+        status: options.status ?? 'active',
         sortBy: options.sortBy ?? SORT_BY_CREATED_AT,
         sortOrder: options.sortOrder ?? SORT_ORDER_DESC,
       };
@@ -131,7 +130,7 @@ function HomePage() {
     fetchPetitions({
       title: '',
       category: 'All',
-      status: 'All',
+      status: 'active',
       sortBy: SORT_BY_CREATED_AT,
       sortOrder: SORT_ORDER_DESC,
     });
