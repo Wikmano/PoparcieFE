@@ -169,6 +169,20 @@ function PetitionDetailsPage() {
   // Obliczanie czy petycja wygasła
   const isExpired = petition.deadline ? new Date(petition.deadline) < new Date() : false;
 
+  let statusClass = 'active';
+  let statusText = 'Aktywna';
+  const statusLower = petition.status ? petition.status.toLowerCase() : '';
+
+  if (statusLower === 'archived') {
+    statusClass = 'archived';
+    statusText = 'Zaarchiwizowana';
+  } else if (statusLower === 'closed' || isExpired) {
+    statusClass = 'closed';
+    statusText = 'Zakończona';
+  }
+
+  const canSign = statusClass === 'active';
+
   return (
     <div className="petition-details-page">
       <main className="petition-container">
@@ -176,9 +190,7 @@ function PetitionDetailsPage() {
 
         <div className="petition-badges">
           <span className="badge category-badge">{petition.category || 'Ogólne'}</span>
-          <span className={`badge status-badge ${isExpired ? 'expired' : 'active'}`}>
-            {isExpired ? 'Zakończona' : 'Aktywna'}
-          </span>
+          <span className={`badge status-badge ${statusClass}`}>{statusText}</span>
         </div>
 
         <header className="petition-header">
@@ -274,9 +286,15 @@ function PetitionDetailsPage() {
           className="sign-button"
           type="button"
           onClick={handleSignPetition}
-          disabled={isSigning || isExpired}
+          disabled={isSigning || !canSign}
         >
-          {isSigning ? 'Podpisywanie...' : isExpired ? 'Petycja wygasła' : 'Podpisz petycję'}
+          {isSigning
+            ? 'Podpisywanie...'
+            : statusClass === 'archived'
+              ? 'Petycja zaarchiwizowana'
+              : statusClass === 'closed'
+                ? 'Petycja wygasła'
+                : 'Podpisz petycję'}
         </button>
       </main>
     </div>
