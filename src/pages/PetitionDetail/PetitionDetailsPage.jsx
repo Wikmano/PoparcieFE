@@ -12,13 +12,8 @@ function PetitionDetailsPage() {
   const [error, setError] = useState('');
   const isAdmin = authService.isAdmin();
   const [isAdminMenuOpen, setIsAdminMenuOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
   const [isSavingChanges, setIsSavingChanges] = useState(false);
   const [adminMessage, setAdminMessage] = useState('');
-  const [editableFields, setEditableFields] = useState({
-    title: '',
-    longDescription: '',
-  });
 
   useEffect(() => {
     const loadPetition = async () => {
@@ -34,10 +29,6 @@ function PetitionDetailsPage() {
         const data = await petitionsService.getPetitionById(id);
         const p = data?.data ?? data;
         setPetition(p);
-        setEditableFields({
-          title: p?.title ?? '',
-          longDescription: p?.longDescription ?? p?.description ?? '',
-        });
       } catch {
         setError('Nie udało się pobrać petycji');
         setPetition(null);
@@ -64,64 +55,6 @@ function PetitionDetailsPage() {
     }
   };
 
-  const handleUpdateClick = () => {
-    if (!petition) return;
-
-    setAdminMessage('');
-    setEditableFields({
-      title: petition.title ?? '',
-      longDescription: petition.longDescription ?? petition.description ?? '',
-    });
-    setIsEditing(true);
-  };
-
-  const handleEditChange = (event) => {
-    const { name, value } = event.target;
-    setEditableFields((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  const handleSaveChanges = async () => {
-    if (!petition) {
-      return;
-    }
-
-    const payload = {
-      title: editableFields.title.trim(),
-      longDescription: editableFields.longDescription.trim(),
-    };
-
-    try {
-      setIsSavingChanges(true);
-      setAdminMessage('');
-      const petitionId = petition._id ?? petition.id ?? id;
-      const result = await petitionsService.updatePetition(petitionId, payload);
-      const updatedPetition = result?.data ?? result;
-
-      setPetition((prevPetition) => ({
-        ...prevPetition,
-        ...updatedPetition,
-        title: updatedPetition?.title ?? payload.title,
-        longDescription:
-          updatedPetition?.longDescription ??
-          updatedPetition?.description ??
-          payload.longDescription,
-        description:
-          updatedPetition?.description ??
-          updatedPetition?.longDescription ??
-          payload.longDescription,
-      }));
-      setIsEditing(false);
-      setAdminMessage('Zmiany zostały zapisane.');
-    } catch (err) {
-      setAdminMessage(err?.response?.data?.message || 'Nie udało się zapisać zmian.');
-    } finally {
-      setIsSavingChanges(false);
-    }
-  };
-
   const handleDeleteClick = async () => {
     if (!petition) {
       return;
@@ -133,10 +66,9 @@ function PetitionDetailsPage() {
       const petitionId = petition._id ?? petition.id ?? id;
       await petitionsService.archivePetition(petitionId);
 
-      setIsEditing(false);
-      setAdminMessage('Petycja została zarchizowana. Jej id: ' + petitionId);
+      setAdminMessage('Akcja została wykonana. Id: ' + petitionId);
     } catch (err) {
-      setAdminMessage(err?.response?.data?.message || 'Nie udało się zapisać zmian.');
+      setAdminMessage(err?.response?.data?.message || 'Nie udało się wykonać akcji.');
     } finally {
       setIsSavingChanges(false);
     }
@@ -181,6 +113,8 @@ function PetitionDetailsPage() {
     statusText = 'Zakończona';
   }
 
+  const isArchived = statusLower === 'archived';
+  const adminActionLabel = isArchived ? 'Przywróć' : 'Ukryj';
   const canSign = statusClass === 'active';
 
   return (
@@ -194,17 +128,7 @@ function PetitionDetailsPage() {
         </div>
 
         <header className="petition-header">
-          {isEditing ? (
-            <textarea
-              className="admin-edit-title"
-              name="title"
-              value={editableFields.title}
-              onChange={handleEditChange}
-              rows={2}
-            />
-          ) : (
-            <h1>{petition.title}</h1>
-          )}
+          <h1>{petition.title}</h1>
           <div className="author-info">
             <span className="author-name">Autor: {petition.authorDisplayName}</span>
             <span className="petition-separator">|</span>
@@ -214,17 +138,7 @@ function PetitionDetailsPage() {
 
         <section className="petition-description">
           <div className="description-label">Opis petycji</div>
-          {isEditing ? (
-            <textarea
-              className="admin-edit-description"
-              name="longDescription"
-              value={editableFields.longDescription}
-              onChange={handleEditChange}
-              rows={8}
-            />
-          ) : (
-            petition.longDescription
-          )}
+          {petition.longDescription}
         </section>
 
         <section className="petition-stats">
@@ -254,28 +168,16 @@ function PetitionDetailsPage() {
 
             {isAdminMenuOpen && (
               <div className="admin-actions">
-                <button className="admin-action-button" type="button" onClick={handleUpdateClick}>
-                  Aktualizuj
-                </button>
                 <button
                   className="admin-action-button admin-delete-button"
                   type="button"
                   onClick={handleDeleteClick}
+                  disabled={isSavingChanges}
+                  title={isArchived ? 'Przywróć petycję' : 'Ukryj petycję'}
                 >
-                  Usuń
+                  {isSavingChanges ? 'Przetwarzanie...' : adminActionLabel}
                 </button>
               </div>
-            )}
-
-            {isEditing && (
-              <button
-                className="save-changes-button"
-                type="button"
-                onClick={handleSaveChanges}
-                disabled={isSavingChanges}
-              >
-                {isSavingChanges ? 'Zapisywanie...' : 'Zapisz zmiany'}
-              </button>
             )}
 
             {adminMessage && <div className="admin-message">{adminMessage}</div>}
