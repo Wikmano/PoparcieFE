@@ -54,6 +54,7 @@ class PetitionsService {
     this.mockPetitions = mockPetitionsSeed.map((petition) => ({ ...petition }));
     this.api = axios.create({
       baseURL: BASE_API_URL + 'petition/',
+      withCredentials: true,
     });
   }
 
