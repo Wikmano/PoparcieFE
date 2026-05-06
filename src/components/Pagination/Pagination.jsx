@@ -2,12 +2,14 @@ import React from 'react';
 import './Pagination.css';
 
 function Pagination({ currentPage, totalPages, onPageChange }) {
-  if (totalPages <= 1) return null;
+  // If we don't know totalPages, we can at least show Next/Prev if we have items
+  if (totalPages <= 1 && currentPage === 1) return null;
 
   const pages = [];
-  // Simple pagination logic, showing all pages for now as per previous implementation
-  for (let i = 1; i <= totalPages; i++) {
-    pages.push(i);
+  if (totalPages && totalPages > 1) {
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push(i);
+    }
   }
 
   return (
@@ -20,6 +22,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
       >
         &laquo;
       </button>
+      
       {pages.map((page) => (
         <button
           key={page}
@@ -29,8 +32,10 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
           {page}
         </button>
       ))}
+
+      {/* If totalPages is unknown or we are not on the last page */}
       <button
-        disabled={currentPage === totalPages}
+        disabled={totalPages ? currentPage === totalPages : false}
         onClick={() => onPageChange(currentPage + 1)}
         className="pagination-arrow"
         aria-label="Następna strona"

@@ -113,7 +113,14 @@ function HomePage() {
 
       // Backend returns { data: { petitions, totalPages, totalCount } } or direct { petitions, totalPages }
       const fetchedPetitions = data?.data?.petitions || data?.petitions || [];
-      const fetchedTotalPages = data?.data?.totalPages || data?.totalPages || 1;
+      let fetchedTotalPages = data?.data?.totalPages || data?.totalPages || 0;
+
+      // Fallback: if backend doesn't provide totalPages, but we have 20 items, assume there might be a next page
+      if (!fetchedTotalPages && fetchedPetitions.length === 20) {
+        fetchedTotalPages = query.page + 1;
+      } else if (!fetchedTotalPages) {
+        fetchedTotalPages = query.page;
+      }
 
       setPetitions(fetchedPetitions);
       setTotalPages(fetchedTotalPages);
