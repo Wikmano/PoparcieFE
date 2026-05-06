@@ -59,7 +59,8 @@ class PetitionsService {
   }
 
   async getAllPetitions(query = {}) {
-    const { title, category, status, page = 1, perPage = 20, sortBy, sortOrder } = query;
+    const { title, category, status: rawStatus, page = 1, perPage = 20, sortBy, sortOrder } = query;
+    const status = rawStatus ? String(rawStatus).trim().toLowerCase() : '';
 
     if (this.useMock) {
       let filtered = this.mockPetitions.map((petition) => ({ ...petition }));
@@ -77,8 +78,10 @@ class PetitionsService {
         filtered = filtered.filter((petition) => petition.category === category);
       }
 
-      if (status && status !== 'All') {
-        filtered = filtered.filter((petition) => petition.status === status);
+      if (status && status !== 'all') {
+        filtered = filtered.filter(
+          (petition) => String(petition.status).toLowerCase() === status,
+        );
       }
 
       const direction = sortOrder === 'desc' ? -1 : 1;
@@ -99,14 +102,22 @@ class PetitionsService {
 
       const startIndex = (page - 1) * perPage;
       const paged = filtered.slice(startIndex, startIndex + perPage);
-      return { data: { petitions: paged } };
+      return {
+        data: {
+          petitions: paged,
+          totalPages: Math.ceil(filtered.length / perPage),
+          totalCount: filtered.length,
+        },
+      };
     }
 
     const params = {};
     if (title) params.title = title;
     if (category && category !== 'All') params.category = category;
-    if (status && status !== 'All') params.status = status;
-    if (sortBy) params.sortBy = sortBy;
+    // Nie wysyłaj status dla aktywnych (backend domyślnie zwraca aktywne)
+    if (status && status !== 'all' && status !== 'active') params.status = status;
+    // Mapuj sortBy dla backendu - wysyłaj tylko jeśli to nie domyślne sortowanie
+    if (sortBy && sortBy !== 'createdAt') params.sortBy = sortBy;
     if (sortOrder) params.sortOrder = sortOrder;
     params.page = page;
     params.perPage = perPage;

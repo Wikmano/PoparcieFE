@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import PetitionCard from '../../components/PetitionCard/PetitionCard.jsx';
+import Pagination from '../../components/Pagination/Pagination.jsx';
 import { petitionsService } from '../../services/petitionsService.js';
 import { authService } from '../../services/authService.js';
 import { PETITION_CATEGORIES } from '../../constants/categories.js';
@@ -72,8 +73,10 @@ function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedStatus, setSelectedStatus] = useState('active');
   const [sortBy, setSortBy] = useState(SORT_BY_CREATED_AT);
-  const [sortOrder, setSortOrder] = useState(SORT_ORDER_DESC);
+  const [sortOrder, setSortOrder] = useState(SORT_ORDER_ASC);
   const [petitions, setPetitions] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const isMountedRef = useRef(true);
@@ -85,104 +88,87 @@ function HomePage() {
     ...(isAdmin ? [{ value: 'archived', label: 'Zarchiwizowane' }] : []),
   ];
 
-  const fetchPetitions = useCallback(async (options = {}) => {
+  const fetchPetitions = useCallback(async (overrides = {}) => {
     try {
       if (!isMountedRef.current) {
         return;
       }
       setError('');
       setIsLoading(true);
+
       const query = {
-        title: options.title ?? '',
-        category: options.category ?? 'All',
-        status: options.status ?? 'active',
-        sortBy: options.sortBy ?? SORT_BY_CREATED_AT,
-        sortOrder: options.sortOrder ?? SORT_ORDER_DESC,
+        title: overrides.title !== undefined ? overrides.title : searchQuery,
+        category: overrides.category !== undefined ? overrides.category : selectedCategory,
+        status: overrides.status !== undefined ? overrides.status : selectedStatus,
+        sortBy: overrides.sortBy !== undefined ? overrides.sortBy : sortBy,
+        sortOrder: overrides.sortOrder !== undefined ? overrides.sortOrder : sortOrder,
+        page: overrides.page !== undefined ? overrides.page : 1,
+        perPage: 20,
       };
+
       const data = await petitionsService.getAllPetitions(query);
       if (!isMountedRef.current) {
         return;
       }
-      const fetchedPetitions = Array.isArray(data?.data?.petitions)
-        ? data.data.petitions
-        : Array.isArray(data?.petitions)
-          ? data.petitions
-          : Array.isArray(data)
-            ? data
-            : [];
+
+      // Backend returns { data: { petitions, totalPages, totalCount } } or direct { petitions, totalPages }
+      const fetchedPetitions = data?.data?.petitions || data?.petitions || [];
+      const fetchedTotalPages = data?.data?.totalPages || data?.totalPages || 1;
+
       setPetitions(fetchedPetitions);
+      setTotalPages(fetchedTotalPages);
+      setCurrentPage(query.page);
     } catch {
       if (!isMountedRef.current) {
         return;
       }
       setError('Nie udało się pobrać petycji');
       setPetitions([]);
+      setTotalPages(1);
     } finally {
       if (isMountedRef.current) {
         setIsLoading(false);
       }
     }
-  }, []);
+  }, [searchQuery, selectedCategory, selectedStatus, sortBy, sortOrder]);
 
   useEffect(() => {
     isMountedRef.current = true;
-
-    fetchPetitions({
-      title: '',
-      category: 'All',
-      status: 'active',
-      sortBy: SORT_BY_CREATED_AT,
-      sortOrder: SORT_ORDER_DESC,
-    });
-
+    fetchPetitions({ page: 1 });
     return () => {
       isMountedRef.current = false;
     };
-  }, [fetchPetitions]);
+  }, []); // Run once on mount
 
   const handleSearchClick = async () => {
-    await fetchPetitions({
-      title: searchQuery,
-      category: selectedCategory,
-      status: selectedStatus,
-      sortBy,
-      sortOrder,
-    });
-    setSearchQuery('');
+    await fetchPetitions({ page: 1 });
   };
 
   const handleCategoryChange = async (category) => {
     setSelectedCategory(category);
-    await fetchPetitions({
-      title: searchQuery,
-      category,
-      status: selectedStatus,
-      sortBy,
-      sortOrder,
-    });
+    await fetchPetitions({ category, page: 1 });
   };
 
   const handleStatusChange = async (status) => {
     setSelectedStatus(status);
-    await fetchPetitions({
-      title: searchQuery,
-      category: selectedCategory,
-      status,
-      sortBy,
-      sortOrder,
-    });
+    await fetchPetitions({ status, page: 1 });
+  };
+
+  const handleSortChange = async (newSortBy) => {
+    setSortBy(newSortBy);
+    await fetchPetitions({ sortBy: newSortBy, page: 1 });
   };
 
   const handleToggleSortOrder = async () => {
     const nextOrder = sortOrder === SORT_ORDER_DESC ? SORT_ORDER_ASC : SORT_ORDER_DESC;
     setSortOrder(nextOrder);
-    await fetchPetitions({
-      title: searchQuery,
-      category: selectedCategory,
-      status: selectedStatus,
-      sortBy,
-      sortOrder: nextOrder,
-    });
+    await fetchPetitions({ sortOrder: nextOrder, page: 1 });
+  };
+
+  const handlePageChange = async (page) => {
+    if (page === currentPage) return;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    await fetchPetitions({ page });
   };
 
   return (
@@ -219,7 +205,7 @@ function HomePage() {
           <CustomDropdown
             options={sortOptions}
             value={sortBy}
-            onChange={setSortBy}
+            onChange={handleSortChange}
             placeholder="Sortuj według"
             className="filter-dropdown"
           />
@@ -228,7 +214,16 @@ function HomePage() {
           </button>
         </div>
       </div>
-      {!isLoading && !error && <PetitionList petitions={petitions} />}
+      {!isLoading && !error && (
+        <>
+          <PetitionList petitions={petitions} />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        </>
+      )}
     </main>
   );
 }
