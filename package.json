@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "predev": "npm run check",
+    "predev": "npm run check && npm test",
     "fix": "npm run lint:fix && npm run format:write",
     "dev:unsafe": "vite",
     "build": "vite build",
