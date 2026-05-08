@@ -25,7 +25,7 @@ describe('OrganizationsRegisterPage', () => {
         <OrganizationsRegisterPage />
       </MemoryRouter>,
     );
-    expect(screen.getByText('Zarejestruj organizację')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Zarejestruj organizację' })).toBeInTheDocument();
   });
 
   it('should render the organization name input field', () => {

@@ -25,7 +25,7 @@ describe('UserRegisterPage', () => {
         <UserRegisterPage />
       </MemoryRouter>,
     );
-    expect(screen.getByText('Zarejestruj się')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Zarejestruj się' })).toBeInTheDocument();
   });
 
   it('should render the username input field', () => {

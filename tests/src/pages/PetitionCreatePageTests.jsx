@@ -85,7 +85,7 @@ describe('PetitionCreatePage', () => {
     renderPage();
     fireEvent.click(screen.getByRole('button', { name: 'Utwórz petycję' }));
     await waitFor(() => {
-      expect(screen.getByText(/błąd|wymagany|Temat/i)).toBeInTheDocument();
+      expect(screen.getByText(/jest wymagany/i)).toBeInTheDocument();
     });
   });
 

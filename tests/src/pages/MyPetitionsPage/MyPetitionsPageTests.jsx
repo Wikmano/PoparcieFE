@@ -106,7 +106,9 @@ describe('MyPetitionsPage', () => {
     petitionsService.getMyPetitions.mockResolvedValue({ data: petitions });
     renderPage();
     await waitFor(() => {
-      expect(screen.getByText('2')).toBeInTheDocument();
+      expect(screen.getByText('Utworzone petycje')).toBeInTheDocument();
     });
+    const countHeading = screen.getByRole('heading', { level: 3, name: '2' });
+    expect(countHeading).toBeInTheDocument();
   });
 });

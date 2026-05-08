@@ -43,6 +43,6 @@ describe('LoginPage', () => {
         <LoginPage />
       </MemoryRouter>,
     );
-    expect(screen.getByText('Zaloguj się')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Zaloguj się' })).toBeInTheDocument();
   });
 });
