@@ -14,6 +14,7 @@ vi.mock('../../../../src/services/petitionsService.js', () => ({
 vi.mock('../../../../src/services/authService.js', () => ({
   authService: {
     isAdmin: vi.fn().mockReturnValue(false),
+    isOrganization: vi.fn().mockReturnValue(false),
   },
 }));
 
