@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { petitionsService } from '../../services/petitionsService.js';
+import { voteService } from '../../services/voteService.js';
 import { authService } from '../../services/authService.js';
 import { zkpService } from '../../services/zkpService.js';
 import { hashPassword, getPasskeySecret, createIdentity } from '../../services/identityService.js';
@@ -58,20 +59,20 @@ function PetitionDetailsPage() {
       const identity = createIdentity(secretString);
       const commitment = identity.commitment.toString();
 
-      const groupData = await zkpService.getPath(commitment);
+      const groupData = await voteService.getPath(commitment);
+      const path = groupData.data;
 
-      const groupId = groupData.id || '1';
-      const groupDepth = groupData.depth || 20;
-      const groupMembers = groupData.members || groupData;
+      // const groupId = groupData.id || '1';
+      // const groupDepth = groupData.depth || 20;
+      // const groupMembers = groupData.members || groupData;
 
-      const group = new Group(groupId, groupDepth, groupMembers);
+      // const group = new Group(groupId, groupDepth, groupMembers);
 
       const message = '1';
       const scope = id;
+      const generatedProof = await generateProof(identity, path, message, scope);
 
-      const proof = await generateProof(identity, group, message, scope);
-
-      await zkpService.sign(proof);
+      await zkpService.sign({ proof: generatedProof, id: scope });
 
       // Clear memory
       setPassword('');
