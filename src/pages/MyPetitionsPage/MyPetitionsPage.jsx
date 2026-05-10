@@ -39,9 +39,6 @@ const MyPetitionsPage = () => {
           <div className="dashboard-title-section">
             <h1>Panel Organizacji</h1>
           </div>
-          <Link to="/petition/create" className="dashboard-create-btn">
-            + Nowa petycja
-          </Link>
         </div>
 
         <div className="dashboard-summary">
@@ -90,9 +87,6 @@ const MyPetitionsPage = () => {
           <div className="no-petitions">
             <h3>Brak petycji</h3>
             <p>Nie utworzyłeś jeszcze żadnych petycji.</p>
-            <Link to="/petition/create" className="dashboard-create-btn">
-              Utwórz petycję
-            </Link>
           </div>
         ) : (
           <div className="dashboard-petitions-grid">

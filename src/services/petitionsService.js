@@ -2,10 +2,50 @@ import axios from 'axios';
 import { BASE_API_URL, USE_MOCK_PETITIONS } from '../AppConfig.js';
 
 const mockPetitionsSeed = [
-  { _id: 1, title: 'Petycja o ochronę środowiska', author: 'Jan Kowalski', description: 'Wiecej terenow zielonych...', votes: 150, goal: 500, category: 'Ekologia', status: 'active', createdAt: '2026-03-15' },
-  { _id: 2, title: 'Petycja o lepsze drogi', author: 'Anna Nowak', description: 'Remont kluczowych drog...', votes: 200, goal: 400, category: 'Infrastruktura', status: 'active', createdAt: '2026-03-16' },
-  { _id: 3, title: 'Petycja o edukację', author: 'Piotr Wiśniewski', description: 'Nowoczesne wyposazenie...', votes: 80, goal: 300, category: 'Edukacja', status: 'closed', createdAt: '2026-03-17' },
-  { _id: 4, title: 'Petycja o zdrowie', author: 'Maria Zielińska', description: 'Lepszy dostep do profilaktyki...', votes: 120, goal: 600, category: 'Zdrowie', status: 'archived', createdAt: '2026-03-18' },
+  {
+    _id: 1,
+    title: 'Petycja o ochronę środowiska',
+    author: 'Jan Kowalski',
+    description: 'Wiecej terenow zielonych...',
+    votes: 150,
+    goal: 500,
+    category: 'Ekologia',
+    status: 'active',
+    createdAt: '2026-03-15',
+  },
+  {
+    _id: 2,
+    title: 'Petycja o lepsze drogi',
+    author: 'Anna Nowak',
+    description: 'Remont kluczowych drog...',
+    votes: 200,
+    goal: 400,
+    category: 'Infrastruktura',
+    status: 'active',
+    createdAt: '2026-03-16',
+  },
+  {
+    _id: 3,
+    title: 'Petycja o edukację',
+    author: 'Piotr Wiśniewski',
+    description: 'Nowoczesne wyposazenie...',
+    votes: 80,
+    goal: 300,
+    category: 'Edukacja',
+    status: 'closed',
+    createdAt: '2026-03-17',
+  },
+  {
+    _id: 4,
+    title: 'Petycja o zdrowie',
+    author: 'Maria Zielińska',
+    description: 'Lepszy dostep do profilaktyki...',
+    votes: 120,
+    goal: 600,
+    category: 'Zdrowie',
+    status: 'archived',
+    createdAt: '2026-03-18',
+  },
   // Dodatkowe petycje do testowania stron (20+ petycji)
   ...Array.from({ length: 25 }, (_, i) => ({
     _id: i + 5,
@@ -51,9 +91,7 @@ class PetitionsService {
       }
 
       if (status && status !== 'all') {
-        filtered = filtered.filter(
-          (petition) => String(petition.status).toLowerCase() === status,
-        );
+        filtered = filtered.filter((petition) => String(petition.status).toLowerCase() === status);
       }
 
       const direction = sortOrder === 'desc' ? -1 : 1;

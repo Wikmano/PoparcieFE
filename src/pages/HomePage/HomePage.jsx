@@ -88,56 +88,59 @@ function HomePage() {
     ...(isAdmin ? [{ value: 'archived', label: 'Zarchiwizowane' }] : []),
   ];
 
-  const fetchPetitions = useCallback(async (overrides = {}) => {
-    try {
-      if (!isMountedRef.current) {
-        return;
-      }
-      setError('');
-      setIsLoading(true);
+  const fetchPetitions = useCallback(
+    async (overrides = {}) => {
+      try {
+        if (!isMountedRef.current) {
+          return;
+        }
+        setError('');
+        setIsLoading(true);
 
-      const query = {
-        title: overrides.title !== undefined ? overrides.title : searchQuery,
-        category: overrides.category !== undefined ? overrides.category : selectedCategory,
-        status: overrides.status !== undefined ? overrides.status : selectedStatus,
-        sortBy: overrides.sortBy !== undefined ? overrides.sortBy : sortBy,
-        sortOrder: overrides.sortOrder !== undefined ? overrides.sortOrder : sortOrder,
-        page: overrides.page !== undefined ? overrides.page : 1,
-        perPage: 20,
-      };
+        const query = {
+          title: overrides.title !== undefined ? overrides.title : searchQuery,
+          category: overrides.category !== undefined ? overrides.category : selectedCategory,
+          status: overrides.status !== undefined ? overrides.status : selectedStatus,
+          sortBy: overrides.sortBy !== undefined ? overrides.sortBy : sortBy,
+          sortOrder: overrides.sortOrder !== undefined ? overrides.sortOrder : sortOrder,
+          page: overrides.page !== undefined ? overrides.page : 1,
+          perPage: 20,
+        };
 
-      const data = await petitionsService.getAllPetitions(query);
-      if (!isMountedRef.current) {
-        return;
-      }
+        const data = await petitionsService.getAllPetitions(query);
+        if (!isMountedRef.current) {
+          return;
+        }
 
-      // Backend returns { data: { petitions, totalPages, totalCount } } or direct { petitions, totalPages }
-      const fetchedPetitions = data?.data?.petitions || data?.petitions || [];
-      let fetchedTotalPages = data?.data?.totalPages || data?.totalPages || 0;
+        // Backend returns { data: { petitions, totalPages, totalCount } } or direct { petitions, totalPages }
+        const fetchedPetitions = data?.data?.petitions || data?.petitions || [];
+        let fetchedTotalPages = data?.data?.totalPages || data?.totalPages || 0;
 
-      // Fallback: if backend doesn't provide totalPages, but we have 20 items, assume there might be a next page
-      if (!fetchedTotalPages && fetchedPetitions.length === 20) {
-        fetchedTotalPages = query.page + 1;
-      } else if (!fetchedTotalPages) {
-        fetchedTotalPages = query.page;
-      }
+        // Fallback: if backend doesn't provide totalPages, but we have 20 items, assume there might be a next page
+        if (!fetchedTotalPages && fetchedPetitions.length === 20) {
+          fetchedTotalPages = query.page + 1;
+        } else if (!fetchedTotalPages) {
+          fetchedTotalPages = query.page;
+        }
 
-      setPetitions(fetchedPetitions);
-      setTotalPages(fetchedTotalPages);
-      setCurrentPage(query.page);
-    } catch {
-      if (!isMountedRef.current) {
-        return;
+        setPetitions(fetchedPetitions);
+        setTotalPages(fetchedTotalPages);
+        setCurrentPage(query.page);
+      } catch {
+        if (!isMountedRef.current) {
+          return;
+        }
+        setError('Nie udało się pobrać petycji');
+        setPetitions([]);
+        setTotalPages(1);
+      } finally {
+        if (isMountedRef.current) {
+          setIsLoading(false);
+        }
       }
-      setError('Nie udało się pobrać petycji');
-      setPetitions([]);
-      setTotalPages(1);
-    } finally {
-      if (isMountedRef.current) {
-        setIsLoading(false);
-      }
-    }
-  }, [searchQuery, selectedCategory, selectedStatus, sortBy, sortOrder]);
+    },
+    [searchQuery, selectedCategory, selectedStatus, sortBy, sortOrder],
+  );
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -145,7 +148,7 @@ function HomePage() {
     return () => {
       isMountedRef.current = false;
     };
-  }, []); // Run once on mount
+  }, [fetchPetitions]); // Run once on mount
 
   const handleSearchClick = async () => {
     await fetchPetitions({ page: 1 });

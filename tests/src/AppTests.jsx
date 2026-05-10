@@ -49,7 +49,6 @@ describe('App', () => {
         <App />
       </MemoryRouter>,
     );
-    expect(screen.getByRole('button', { name: 'Użytkownik' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Organizacja' })).toBeInTheDocument();
   });
 

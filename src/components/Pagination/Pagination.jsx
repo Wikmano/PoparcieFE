@@ -22,7 +22,7 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
       >
         &laquo;
       </button>
-      
+
       {pages.map((page) => (
         <button
           key={page}

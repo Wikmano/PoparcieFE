@@ -19,15 +19,6 @@ vi.mock('react-router-dom', async () => {
 import LoginPage from '../../../../src/pages/Logins/LoginPage.jsx';
 
 describe('LoginPage', () => {
-  it('should render the "Użytkownik" tab', () => {
-    render(
-      <MemoryRouter>
-        <LoginPage />
-      </MemoryRouter>,
-    );
-    expect(screen.getByRole('button', { name: 'Użytkownik' })).toBeInTheDocument();
-  });
-
   it('should render the "Organizacja" tab', () => {
     render(
       <MemoryRouter>
@@ -37,12 +28,12 @@ describe('LoginPage', () => {
     expect(screen.getByRole('button', { name: 'Organizacja' })).toBeInTheDocument();
   });
 
-  it('should show user login form by default', () => {
+  it('should show organization login form by default', () => {
     render(
       <MemoryRouter>
         <LoginPage />
       </MemoryRouter>,
     );
-    expect(screen.getByRole('heading', { name: 'Zaloguj się' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Zaloguj się do organizacji' })).toBeInTheDocument();
   });
 });

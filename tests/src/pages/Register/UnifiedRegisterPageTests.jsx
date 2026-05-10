@@ -43,6 +43,6 @@ describe('UnifiedRegisterPage', () => {
         <UnifiedRegisterPage />
       </MemoryRouter>,
     );
-    expect(screen.getByRole('heading', { name: 'Zarejestruj się' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Rejestracja użytkownika' })).toBeInTheDocument();
   });
 });

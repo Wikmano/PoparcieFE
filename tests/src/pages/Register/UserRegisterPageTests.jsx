@@ -25,51 +25,15 @@ describe('UserRegisterPage', () => {
         <UserRegisterPage />
       </MemoryRouter>,
     );
-    expect(screen.getByRole('heading', { name: 'Zarejestruj się' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Rejestracja użytkownika' })).toBeInTheDocument();
   });
 
-  it('should render the username input field', () => {
+  it('should render the mObywatel registration button', () => {
     render(
       <MemoryRouter>
         <UserRegisterPage />
       </MemoryRouter>,
     );
-    expect(screen.getByPlaceholderText('Nazwa użytkownika')).toBeInTheDocument();
-  });
-
-  it('should render the password input field', () => {
-    render(
-      <MemoryRouter>
-        <UserRegisterPage />
-      </MemoryRouter>,
-    );
-    expect(screen.getByPlaceholderText('Hasło')).toBeInTheDocument();
-  });
-
-  it('should render the first name input field', () => {
-    render(
-      <MemoryRouter>
-        <UserRegisterPage />
-      </MemoryRouter>,
-    );
-    expect(screen.getByPlaceholderText('Imię')).toBeInTheDocument();
-  });
-
-  it('should render the last name input field', () => {
-    render(
-      <MemoryRouter>
-        <UserRegisterPage />
-      </MemoryRouter>,
-    );
-    expect(screen.getByPlaceholderText('Nazwisko')).toBeInTheDocument();
-  });
-
-  it('should render the submit button', () => {
-    render(
-      <MemoryRouter>
-        <UserRegisterPage />
-      </MemoryRouter>,
-    );
-    expect(screen.getByRole('button', { name: 'Zarejestruj się' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Zarejestruj z mObywatel' })).toBeInTheDocument();
   });
 });
