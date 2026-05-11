@@ -48,7 +48,11 @@ function UserRegisterPage() {
       }, 1500);
     } catch (err) {
       console.error(err);
-      setError('Błąd podczas tworzenia tożsamości (/register/2) lub generowania klucza');
+      setError(
+        err?.response?.data?.message ||
+          err?.message ||
+          'Błąd podczas tworzenia tożsamości lub generowania klucza',
+      );
     } finally {
       setLoading(false);
     }
@@ -69,6 +73,10 @@ function UserRegisterPage() {
     e.preventDefault();
     if (!password) {
       setError('Hasło nie może być puste');
+      return;
+    }
+    if (password.length < 12) {
+      setError('Hasło musi mieć co najmniej 12 znaków');
       return;
     }
     try {

@@ -109,6 +109,10 @@ function PetitionDetailsPage() {
       setError('Hasło nie może być puste');
       return;
     }
+    if (password.length < 12) {
+      setError('Hasło musi mieć co najmniej 12 znaków');
+      return;
+    }
     try {
       const hashed = await hashPassword(password);
       await executeZkpVoting(hashed);
