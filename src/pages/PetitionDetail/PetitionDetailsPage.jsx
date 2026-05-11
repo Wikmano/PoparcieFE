@@ -6,7 +6,7 @@ import { authService } from '../../services/authService.js';
 import { zkpService } from '../../services/zkpService.js';
 import { hashPassword, getPasskeySecret, createIdentity } from '../../services/identityService.js';
 import { generateProof } from '@semaphore-protocol/proof';
-import { Group } from '@semaphore-protocol/group';
+import { SNARK_ARTIFACTS } from '../../AppConfig.js';
 import './PetitionDetailsPage.css';
 
 function PetitionDetailsPage() {
@@ -62,15 +62,25 @@ function PetitionDetailsPage() {
       const groupData = await voteService.getPath(commitment);
       const path = groupData.data;
 
-      // const groupId = groupData.id || '1';
-      // const groupDepth = groupData.depth || 20;
-      // const groupMembers = groupData.members || groupData;
-
-      // const group = new Group(groupId, groupDepth, groupMembers);
-
+      const groupDepth = path.siblings.length;
+      console.log('Group depth:', groupDepth);
       const message = '1';
       const scope = id;
-      const generatedProof = await generateProof(identity, path, message, scope);
+      const snarkArtifacts = SNARK_ARTIFACTS
+        ? {
+            wasm: SNARK_ARTIFACTS.replace(/\/+$/, '') + `/semaphore-${groupDepth}.wasm`,
+            zkey: SNARK_ARTIFACTS.replace(/\/+$/, '') + `/semaphore-${groupDepth}.zkey`,
+          }
+        : undefined;
+
+      const generatedProof = await generateProof(
+        identity,
+        path,
+        message,
+        scope,
+        groupDepth,
+        snarkArtifacts,
+      );
 
       await zkpService.sign({ proof: generatedProof, id: scope });
 
