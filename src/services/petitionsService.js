@@ -1,48 +1,63 @@
 import axios from 'axios';
 import { BASE_API_URL, USE_MOCK_PETITIONS } from '../AppConfig.js';
-import { authService } from './authService.js';
 
 const mockPetitionsSeed = [
   {
     _id: 1,
     title: 'Petycja o ochronę środowiska',
     author: 'Jan Kowalski',
-    description: 'Wiecej terenow zielonych i mniej zanieczyszczen w miescie.',
+    description: 'Wiecej terenow zielonych...',
     votes: 150,
     goal: 500,
     category: 'Ekologia',
+    status: 'active',
     createdAt: '2026-03-15',
   },
   {
     _id: 2,
     title: 'Petycja o lepsze drogi',
     author: 'Anna Nowak',
-    description: 'Remont kluczowych drog i bezpieczniejsze przejscia dla pieszych.',
+    description: 'Remont kluczowych drog...',
     votes: 200,
     goal: 400,
     category: 'Infrastruktura',
+    status: 'active',
     createdAt: '2026-03-16',
   },
   {
     _id: 3,
     title: 'Petycja o edukację',
     author: 'Piotr Wiśniewski',
-    description: 'Nowoczesne wyposazenie szkol i darmowe zajecia dodatkowe.',
+    description: 'Nowoczesne wyposazenie...',
     votes: 80,
     goal: 300,
     category: 'Edukacja',
+    status: 'closed',
     createdAt: '2026-03-17',
   },
   {
     _id: 4,
     title: 'Petycja o zdrowie',
     author: 'Maria Zielińska',
-    description: 'Lepszy dostep do profilaktyki i krotsze kolejki do specjalistow.',
+    description: 'Lepszy dostep do profilaktyki...',
     votes: 120,
     goal: 600,
     category: 'Zdrowie',
+    status: 'archived',
     createdAt: '2026-03-18',
   },
+  // Dodatkowe petycje do testowania stron (20+ petycji)
+  ...Array.from({ length: 25 }, (_, i) => ({
+    _id: i + 5,
+    title: `Petycja testowa nr ${i + 5}`,
+    author: 'Autor Testowy',
+    description: 'To jest petycja wygenerowana do testów stronicowania.',
+    votes: Math.floor(Math.random() * 100),
+    goal: 1000,
+    category: 'Inne',
+    status: 'active',
+    createdAt: `2026-04-${(i % 28) + 1}`.padStart(10, '0'),
+  })),
 ];
 
 class PetitionsService {
@@ -51,11 +66,13 @@ class PetitionsService {
     this.mockPetitions = mockPetitionsSeed.map((petition) => ({ ...petition }));
     this.api = axios.create({
       baseURL: BASE_API_URL + 'petition/',
+      withCredentials: true,
     });
   }
 
   async getAllPetitions(query = {}) {
-    const { title, category, page = 1, perPage = 20, sortBy, sortOrder } = query;
+    const { title, category, status: rawStatus, page = 1, perPage = 20, sortBy, sortOrder } = query;
+    const status = rawStatus ? String(rawStatus).trim().toLowerCase() : '';
 
     if (this.useMock) {
       let filtered = this.mockPetitions.map((petition) => ({ ...petition }));
@@ -71,6 +88,10 @@ class PetitionsService {
 
       if (category && category !== 'All') {
         filtered = filtered.filter((petition) => petition.category === category);
+      }
+
+      if (status && status !== 'all') {
+        filtered = filtered.filter((petition) => String(petition.status).toLowerCase() === status);
       }
 
       const direction = sortOrder === 'desc' ? -1 : 1;
@@ -91,18 +112,38 @@ class PetitionsService {
 
       const startIndex = (page - 1) * perPage;
       const paged = filtered.slice(startIndex, startIndex + perPage);
-      return { data: { petitions: paged } };
+      return {
+        data: {
+          petitions: paged,
+          totalPages: Math.ceil(filtered.length / perPage),
+          totalCount: filtered.length,
+        },
+      };
     }
 
     const params = {};
     if (title) params.title = title;
     if (category && category !== 'All') params.category = category;
-    if (sortBy) params.sortBy = sortBy;
+    // Nie wysyłaj status dla aktywnych (backend domyślnie zwraca aktywne)
+    if (status && status !== 'all' && status !== 'active') params.status = status;
+    // Mapuj sortBy dla backendu - wysyłaj tylko jeśli to nie domyślne sortowanie
+    if (sortBy && sortBy !== 'createdAt') params.sortBy = sortBy;
     if (sortOrder) params.sortOrder = sortOrder;
     params.page = page;
     params.perPage = perPage;
 
     const response = await this.api.get('', { params });
+    return response.data;
+  }
+
+  async getMyPetitions() {
+    if (this.useMock) {
+      return { data: this.mockPetitions.slice(0, 2) };
+    }
+
+    const response = await this.api.get('/me', {
+      withCredentials: true,
+    });
     return response.data;
   }
 
@@ -119,6 +160,7 @@ class PetitionsService {
   async createPetition(petitionData) {
     if (this.useMock) {
       const newPetition = {
+        _id: this.mockPetitions.length + 1,
         title: petitionData.title,
         shortDescription: petitionData.shortDescription,
         description: petitionData.longDescription, // Map to existing field for safety
@@ -126,6 +168,7 @@ class PetitionsService {
         goal: petitionData.goal,
         votes: 0,
         category: 'Inne',
+        status: 'active',
         createdAt: new Date().toISOString().split('T')[0],
       };
 
@@ -141,10 +184,6 @@ class PetitionsService {
   }
 
   async updatePetition(id, petitionData) {
-    if (!authService.isAdmin()) {
-      throw new Error('Not authorized!');
-    }
-
     if (this.useMock) {
       const petitionId = Number(id);
       const index = this.mockPetitions.findIndex((petition) => petition._id === petitionId);
@@ -177,10 +216,6 @@ class PetitionsService {
   }
 
   async archivePetition(id) {
-    if (!authService.isAdmin()) {
-      throw new Error('Not authorized!');
-    }
-
     if (this.useMock) {
       const petitionId = Number(id);
       const index = this.mockPetitions.findIndex((petition) => petition._id === petitionId);
@@ -196,7 +231,7 @@ class PetitionsService {
       return;
     }
 
-    const response = await this.api.post(
+    const response = await this.api.patch(
       `/${id}/archive`,
       {},
       {

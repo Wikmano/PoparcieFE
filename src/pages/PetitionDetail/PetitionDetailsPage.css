@@ -129,11 +129,14 @@
   top: -12px;
   left: 24px;
   background: white;
-  padding: 0 10px;
+  padding: 0 14px;
   color: #cb160e;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 0.9rem;
+  line-height: 24px;
   text-transform: uppercase;
+  z-index: 2;
+  letter-spacing: 0.5px;
 }
 
 .admin-edit-description {
@@ -213,10 +216,16 @@
   color: #cb160e;
 }
 
-.status-badge.expired {
+.status-badge.closed {
   background-color: #fff1f0;
   color: #cf1322;
   border: 1px solid #ffa39e;
+}
+
+.status-badge.archived {
+  background-color: #f5f5f5;
+  color: #595959;
+  border: 1px solid #d9d9d9;
 }
 
 .sign-button:disabled {

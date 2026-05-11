@@ -1,7 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { petitionsService } from '../../services/petitionsService.js';
+import { voteService } from '../../services/voteService.js';
 import { authService } from '../../services/authService.js';
+import { zkpService } from '../../services/zkpService.js';
+import { hashPassword, getPasskeySecret, createIdentity } from '../../services/identityService.js';
+import { generateProof } from '@semaphore-protocol/proof';
+import { SNARK_ARTIFACTS } from '../../AppConfig.js';
 import './PetitionDetailsPage.css';
 
 function PetitionDetailsPage() {
@@ -11,114 +16,118 @@ function PetitionDetailsPage() {
   const [isSigning, setIsSigning] = useState(false);
   const [error, setError] = useState('');
   const isAdmin = authService.isAdmin();
+  const isOrganization = authService.isOrganization();
   const [isAdminMenuOpen, setIsAdminMenuOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
   const [isSavingChanges, setIsSavingChanges] = useState(false);
   const [adminMessage, setAdminMessage] = useState('');
-  const [editableFields, setEditableFields] = useState({
-    title: '',
-    longDescription: '',
-  });
 
-  useEffect(() => {
-    const loadPetition = async () => {
-      if (!id) {
-        setError('Brak id petycji');
-        setIsLoading(false);
-        return;
-      }
+  // Auth flow states for voting
+  const [showAuthPrompt, setShowAuthPrompt] = useState(false);
+  const [usePassword, setUsePassword] = useState(false);
+  const [password, setPassword] = useState('');
 
-      try {
-        setError('');
-        setIsLoading(true);
-        const data = await petitionsService.getPetitionById(id);
-        const p = data?.data ?? data;
-        setPetition(p);
-        setEditableFields({
-          title: p?.title ?? '',
-          longDescription: p?.longDescription ?? p?.description ?? '',
-        });
-      } catch {
-        setError('Nie udało się pobrać petycji');
-        setPetition(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadPetition();
-  }, [id]);
-
-  const handleSignPetition = async () => {
-    if (!id) return;
+  const loadPetition = useCallback(async () => {
+    if (!id) {
+      setError('Brak id petycji');
+      setIsLoading(false);
+      return;
+    }
 
     try {
       setError('');
+      setIsLoading(true);
+      const data = await petitionsService.getPetitionById(id);
+      const p = data?.data ?? data;
+      setPetition(p);
+    } catch {
+      setError('Nie udało się pobrać petycji');
+      setPetition(null);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    loadPetition();
+  }, [loadPetition]);
+
+  const executeZkpVoting = async (secretString) => {
+    try {
       setIsSigning(true);
-      const updatedPetition = await petitionsService.signPetition(id);
-      setPetition(updatedPetition);
+      setError('');
+
+      const identity = createIdentity(secretString);
+      const commitment = identity.commitment.toString();
+
+      const groupData = await voteService.getPath(commitment);
+      const path = groupData.data;
+
+      const groupDepth = path.siblings.length;
+      console.log('Group depth:', groupDepth);
+      const message = '1';
+      const scope = id;
+      const snarkArtifacts = SNARK_ARTIFACTS
+        ? {
+            wasm: SNARK_ARTIFACTS.replace(/\/+$/, '') + `/semaphore-${groupDepth}.wasm`,
+            zkey: SNARK_ARTIFACTS.replace(/\/+$/, '') + `/semaphore-${groupDepth}.zkey`,
+          }
+        : undefined;
+
+      const generatedProof = await generateProof(
+        identity,
+        path,
+        message,
+        scope,
+        groupDepth,
+        snarkArtifacts,
+      );
+
+      await zkpService.sign({ proof: generatedProof, id: scope });
+
+      // Clear memory
+      setPassword('');
+      setShowAuthPrompt(false);
+
+      // Reload petition to show updated vote count
+      await loadPetition();
     } catch (err) {
-      setError(err?.message || 'Nie udało się podpisać petycji');
+      console.error(err);
+      setError(err?.response?.data?.message || err.message || 'Nie udało się oddać głosu');
     } finally {
       setIsSigning(false);
     }
   };
 
-  const handleUpdateClick = () => {
-    if (!petition) return;
-
-    setAdminMessage('');
-    setEditableFields({
-      title: petition.title ?? '',
-      longDescription: petition.longDescription ?? petition.description ?? '',
-    });
-    setIsEditing(true);
+  const handleSignPetitionInit = () => {
+    setShowAuthPrompt(true);
   };
 
-  const handleEditChange = (event) => {
-    const { name, value } = event.target;
-    setEditableFields((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+  const handlePasskeyVoteClick = async (attachment) => {
+    try {
+      setError('');
+      const secret = await getPasskeySecret(attachment);
+      await executeZkpVoting(secret);
+    } catch (err) {
+      console.error(err);
+      setError(err.message || 'Błąd podczas autoryzacji Passkey');
+    }
   };
 
-  const handleSaveChanges = async () => {
-    if (!petition) {
+  const handlePasswordVoteSubmit = async (e) => {
+    e.preventDefault();
+    if (!password) {
+      setError('Hasło nie może być puste');
       return;
     }
-
-    const payload = {
-      title: editableFields.title.trim(),
-      longDescription: editableFields.longDescription.trim(),
-    };
-
+    if (password.length < 12) {
+      setError('Hasło musi mieć co najmniej 12 znaków');
+      return;
+    }
     try {
-      setIsSavingChanges(true);
-      setAdminMessage('');
-      const petitionId = petition._id ?? petition.id ?? id;
-      const result = await petitionsService.updatePetition(petitionId, payload);
-      const updatedPetition = result?.data ?? result;
-
-      setPetition((prevPetition) => ({
-        ...prevPetition,
-        ...updatedPetition,
-        title: updatedPetition?.title ?? payload.title,
-        longDescription:
-          updatedPetition?.longDescription ??
-          updatedPetition?.description ??
-          payload.longDescription,
-        description:
-          updatedPetition?.description ??
-          updatedPetition?.longDescription ??
-          payload.longDescription,
-      }));
-      setIsEditing(false);
-      setAdminMessage('Zmiany zostały zapisane.');
-    } catch (err) {
-      setAdminMessage(err?.response?.data?.message || 'Nie udało się zapisać zmian.');
-    } finally {
-      setIsSavingChanges(false);
+      const hashed = await hashPassword(password);
+      await executeZkpVoting(hashed);
+    } catch {
+      setError('Błąd podczas hashowania hasła');
     }
   };
 
@@ -133,10 +142,9 @@ function PetitionDetailsPage() {
       const petitionId = petition._id ?? petition.id ?? id;
       await petitionsService.archivePetition(petitionId);
 
-      setIsEditing(false);
-      setAdminMessage('Petycja została zarchizowana. Jej id: ' + petitionId);
+      setAdminMessage('Akcja została wykonana. Id: ' + petitionId);
     } catch (err) {
-      setAdminMessage(err?.response?.data?.message || 'Nie udało się zapisać zmian.');
+      setAdminMessage(err?.response?.data?.message || 'Nie udało się wykonać akcji.');
     } finally {
       setIsSavingChanges(false);
     }
@@ -169,6 +177,22 @@ function PetitionDetailsPage() {
   // Obliczanie czy petycja wygasła
   const isExpired = petition.deadline ? new Date(petition.deadline) < new Date() : false;
 
+  let statusClass = 'active';
+  let statusText = 'Aktywna';
+  const statusLower = petition.status ? petition.status.toLowerCase() : '';
+
+  if (statusLower === 'archived') {
+    statusClass = 'archived';
+    statusText = 'Zaarchiwizowana';
+  } else if (statusLower === 'closed' || isExpired) {
+    statusClass = 'closed';
+    statusText = 'Zakończona';
+  }
+
+  const isArchived = statusLower === 'archived';
+  const adminActionLabel = isArchived ? 'Przywróć' : 'Ukryj';
+  const canSign = statusClass === 'active';
+
   return (
     <div className="petition-details-page">
       <main className="petition-container">
@@ -176,23 +200,11 @@ function PetitionDetailsPage() {
 
         <div className="petition-badges">
           <span className="badge category-badge">{petition.category || 'Ogólne'}</span>
-          <span className={`badge status-badge ${isExpired ? 'expired' : 'active'}`}>
-            {isExpired ? 'Zakończona' : 'Aktywna'}
-          </span>
+          <span className={`badge status-badge ${statusClass}`}>{statusText}</span>
         </div>
 
         <header className="petition-header">
-          {isEditing ? (
-            <textarea
-              className="admin-edit-title"
-              name="title"
-              value={editableFields.title}
-              onChange={handleEditChange}
-              rows={2}
-            />
-          ) : (
-            <h1>{petition.title}</h1>
-          )}
+          <h1>{petition.title}</h1>
           <div className="author-info">
             <span className="author-name">Autor: {petition.authorDisplayName}</span>
             <span className="petition-separator">|</span>
@@ -202,17 +214,7 @@ function PetitionDetailsPage() {
 
         <section className="petition-description">
           <div className="description-label">Opis petycji</div>
-          {isEditing ? (
-            <textarea
-              className="admin-edit-description"
-              name="longDescription"
-              value={editableFields.longDescription}
-              onChange={handleEditChange}
-              rows={8}
-            />
-          ) : (
-            petition.longDescription
-          )}
+          {petition.longDescription}
         </section>
 
         <section className="petition-stats">
@@ -242,42 +244,133 @@ function PetitionDetailsPage() {
 
             {isAdminMenuOpen && (
               <div className="admin-actions">
-                <button className="admin-action-button" type="button" onClick={handleUpdateClick}>
-                  Aktualizuj
-                </button>
                 <button
                   className="admin-action-button admin-delete-button"
                   type="button"
                   onClick={handleDeleteClick}
+                  disabled={isSavingChanges}
+                  title={isArchived ? 'Przywróć petycję' : 'Ukryj petycję'}
                 >
-                  Usuń
+                  {isSavingChanges ? 'Przetwarzanie...' : adminActionLabel}
                 </button>
               </div>
-            )}
-
-            {isEditing && (
-              <button
-                className="save-changes-button"
-                type="button"
-                onClick={handleSaveChanges}
-                disabled={isSavingChanges}
-              >
-                {isSavingChanges ? 'Zapisywanie...' : 'Zapisz zmiany'}
-              </button>
             )}
 
             {adminMessage && <div className="admin-message">{adminMessage}</div>}
           </section>
         )}
 
-        <button
-          className="sign-button"
-          type="button"
-          onClick={handleSignPetition}
-          disabled={isSigning || isExpired}
-        >
-          {isSigning ? 'Podpisywanie...' : isExpired ? 'Petycja wygasła' : 'Podpisz petycję'}
-        </button>
+        {!isOrganization && (
+          <section
+            className="petition-signing-section"
+            style={{
+              marginTop: '1.5rem',
+              paddingTop: '2.5rem',
+              borderTop: '1px solid #f0f0f0',
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            {!showAuthPrompt ? (
+              <button
+                className="sign-button"
+                type="button"
+                onClick={handleSignPetitionInit}
+                disabled={isSigning || !canSign}
+              >
+                {statusClass === 'archived'
+                  ? 'Petycja zaarchiwizowana'
+                  : statusClass === 'closed'
+                    ? 'Petycja wygasła'
+                    : 'Podpisz petycję'}
+              </button>
+            ) : (
+              <div
+                className="auth-prompt-container"
+                style={{
+                  background: '#f8fafc',
+                  padding: '30px',
+                  borderRadius: '16px',
+                  border: '1px solid #e2e8f0',
+                  width: '100%',
+                }}
+              >
+                <h3>Potwierdź swoją tożsamość</h3>
+                <p>Aby oddać głos anonimowo, musisz potwierdzić swoją tożsamość.</p>
+
+                {!usePassword ? (
+                  <div
+                    className="passkey-options"
+                    style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}
+                  >
+                    <button
+                      className="passkey-btn"
+                      onClick={() => handlePasskeyVoteClick('platform')}
+                      disabled={isSigning}
+                      style={{ backgroundColor: '#0f766e' }}
+                    >
+                      {isSigning ? 'Przetwarzanie...' : 'Windows Hello / Biometria'}
+                    </button>
+                    <button
+                      className="passkey-btn"
+                      onClick={() => handlePasskeyVoteClick('security-key')}
+                      disabled={isSigning}
+                      style={{ backgroundColor: '#1e40af' }}
+                    >
+                      {isSigning ? 'Przetwarzanie...' : 'Klucz sprzętowy (U2F/Yubikey)'}
+                    </button>
+                    <button
+                      className="passkey-btn"
+                      onClick={() => handlePasskeyVoteClick('hybrid')}
+                      disabled={isSigning}
+                      style={{ backgroundColor: '#6d28d9' }}
+                    >
+                      {isSigning ? 'Przetwarzanie...' : 'Kod QR / Telefon (Wymagany Bluetooth)'}
+                    </button>
+                    <button
+                      className="passkey-btn"
+                      onClick={() => setUsePassword(true)}
+                      disabled={isSigning}
+                      style={{ backgroundColor: '#64748b', marginTop: '10px' }}
+                    >
+                      Chcę użyć tradycyjnego hasła
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={handlePasswordVoteSubmit} className="password-form">
+                    <input
+                      type="password"
+                      placeholder="Wprowadź swoje hasło"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      disabled={isSigning}
+                      required
+                    />
+                    <button
+                      type="submit"
+                      className="submit-btn"
+                      disabled={isSigning}
+                      style={{ backgroundColor: '#059669' }}
+                    >
+                      {isSigning ? 'Przetwarzanie...' : 'Autoryzuj hasłem'}
+                    </button>
+                    <button
+                      type="button"
+                      className="passkey-btn"
+                      onClick={() => setUsePassword(false)}
+                      disabled={isSigning}
+                      style={{ backgroundColor: '#6366f1', marginTop: '10px' }}
+                    >
+                      Wróć do opcji Passkeys
+                    </button>
+                  </form>
+                )}
+              </div>
+            )}
+          </section>
+        )}
       </main>
     </div>
   );

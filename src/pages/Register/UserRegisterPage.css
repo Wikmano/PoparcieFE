@@ -1,0 +1,101 @@
+.user-register-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 30px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.user-register-container h2 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.user-register-container p {
+  margin-bottom: 24px;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.mobywatel-btn,
+.passkey-btn,
+.submit-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    transform 0.1s;
+}
+
+.mobywatel-btn {
+  background-color: #e51d38; /* mObywatel red/pink-ish */
+  color: white;
+}
+.mobywatel-btn:hover {
+  background-color: #d11830;
+}
+
+.passkey-btn {
+  background-color: #007bff;
+  color: white;
+  margin-bottom: 15px;
+}
+.passkey-btn:hover {
+  background-color: #0056b3;
+}
+
+.submit-btn {
+  background-color: #cb160e;
+  color: white;
+  margin-top: 15px;
+}
+.submit-btn:hover {
+  background-color: #b3050f;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: #007bff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-top: 10px;
+}
+.link-btn:hover {
+  color: #0056b3;
+}
+
+.password-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.password-form input {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.error-message {
+  margin-top: 15px;
+  color: #dc3545;
+  font-size: 0.9rem;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

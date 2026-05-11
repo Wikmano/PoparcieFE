@@ -8,17 +8,41 @@ const api = axios.create({
   withCredentials: true,
 });
 
+const zkpApi = axios.create({
+  baseURL: BASE_API_URL + 'zkp/',
+  withCredentials: true,
+});
+
 export const authService = {
   register: async (userData) => {
     const response = await api.post('register', userData);
     if (response.status === 201) {
       console.log('Registration successful:', response.data);
       localStorage.setItem(USERNAME, userData.username);
-      localStorage.setItem(ROLE, userData.role ?? ORGANIZATION_ROLE);
+      localStorage.setItem(ROLE, 'petition_user'); // hardcoded role.
 
       return response.data;
     } else {
       throw new Error('Registration failed');
+    }
+  },
+  zkpRegister1: async () => {
+    const response = await zkpApi.get('register/1');
+    if (response.status === 201 || response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error('ZKP Registration 1 failed');
+    }
+  },
+  zkpRegister2: async (commitment) => {
+    const response = await zkpApi.post('register/2', { commitment });
+    if (response.status === 201 || response.status === 200) {
+      // Upon success, the user is registered (identity stored locally).
+      // We can set a local role.
+      localStorage.setItem(ROLE, NORMAL_USER_ROLE);
+      return response.data;
+    } else {
+      throw new Error('ZKP Registration 2 failed');
     }
   },
   login: async (credentials) => {
@@ -26,7 +50,7 @@ export const authService = {
 
     if (response.status === 200) {
       localStorage.setItem(USERNAME, credentials.username);
-      localStorage.setItem(ROLE, response.data.role ?? ORGANIZATION_ROLE); //hardcoded rola - zmienic przy implementacji zkp
+      localStorage.setItem(ROLE, 'petition_user'); //hardcoded role
 
       return response.data;
     } else {
