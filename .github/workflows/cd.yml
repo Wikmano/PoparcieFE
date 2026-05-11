@@ -20,7 +20,7 @@ jobs:
 
       - name: Replace AppConfig.js
         run: |
-          cp /home/user/AppConfig.js ./src/AppConfig.js
+          cp /home/user/mpoparcie/AppConfig.js ./src/AppConfig.js
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
