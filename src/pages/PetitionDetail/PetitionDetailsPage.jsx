@@ -69,6 +69,9 @@ function PetitionDetailsPage() {
 
       const semaphoreGroup = new Group(commitments);
       const leafIndex = semaphoreGroup.indexOf(commitment);
+      if (leafIndex === -1) {
+        throw new Error('Podane hasło lub klucz są nieprawidłowe (brak autoryzacji).');
+      }
       const merkleProof = semaphoreGroup.generateMerkleProof(leafIndex);
 
       const groupDepth = semaphoreGroup.depth;
