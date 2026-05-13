@@ -7,6 +7,7 @@ vi.mock('../../src/services/authService.js', () => ({
   authService: {
     getUserName: vi.fn().mockReturnValue(null),
     isOrganization: vi.fn().mockReturnValue(false),
+    isNormalUser: vi.fn().mockReturnValue(false),
     isAdmin: vi.fn().mockReturnValue(false),
   },
 }));
