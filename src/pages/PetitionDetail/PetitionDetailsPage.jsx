@@ -8,6 +8,7 @@ import { hashPassword, getPasskeySecret, createIdentity } from '../../services/i
 import { generateProof } from '@semaphore-protocol/proof';
 import { SNARK_ARTIFACTS } from '../../AppConfig.js';
 import './PetitionDetailsPage.css';
+import { Group } from '@semaphore-protocol/group';
 
 function PetitionDetailsPage() {
   const { id } = useParams();
@@ -61,12 +62,16 @@ function PetitionDetailsPage() {
 
       const identity = createIdentity(secretString);
       const commitment = identity.commitment.toString();
+      const groupId = '1'; //Only one tree for now
 
-      const groupData = await voteService.getPath(commitment);
-      const path = groupData.data;
+      const commitmentsData = await voteService.getGroup(groupId);
+      const commitments = commitmentsData?.data;
 
-      const groupDepth = path.siblings.length;
-      console.log('Group depth:', groupDepth);
+      const semaphoreGroup = new Group(commitments);
+      const leafIndex = semaphoreGroup.indexOf(commitment);
+      const merkleProof = semaphoreGroup.generateMerkleProof(leafIndex);
+
+      const groupDepth = semaphoreGroup.depth;
       const message = '1';
       const scope = id;
       const snarkArtifacts = SNARK_ARTIFACTS
@@ -78,10 +83,9 @@ function PetitionDetailsPage() {
 
       const generatedProof = await generateProof(
         identity,
-        path,
+        merkleProof,
         message,
         scope,
-        groupDepth,
         snarkArtifacts,
       );
 
