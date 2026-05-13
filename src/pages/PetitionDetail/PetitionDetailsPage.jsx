@@ -86,6 +86,7 @@ function PetitionDetailsPage() {
         merkleProof,
         message,
         scope,
+        groupDepth,
         snarkArtifacts,
       );
 
