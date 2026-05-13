@@ -7,6 +7,7 @@ function Navbar() {
   const navigate = useNavigate();
   const [username, setUsername] = useState(authService.getUserName());
   const [isOrganization, setIsOrganization] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -27,13 +28,22 @@ function Navbar() {
     authService.logout();
     setUsername(null);
     setIsOrganization(false);
+    setIsMenuOpen(false);
     navigate('/login');
     window.location.reload();
   };
 
+  const handleMenuToggle = () => {
+    setIsMenuOpen((prev) => !prev);
+  };
+
+  const handleMenuClose = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
     <nav className="navbar">
-      <Link to="/" className="navbar-logo-link">
+      <Link to="/" className="navbar-logo-link" onClick={handleMenuClose}>
         <div className="navbar-logo">
           <img src="/godlo.png" alt="Godło" className="navbar-godlo" />
           <div className="navbar-brand">
@@ -45,19 +55,38 @@ function Navbar() {
         </div>
       </Link>
 
-      <ul className="navbar-links">
+      <button
+        type="button"
+        className="hamburger-btn"
+        onClick={handleMenuToggle}
+        aria-label={isMenuOpen ? 'Zamknij menu' : 'Otwórz menu'}
+        aria-expanded={isMenuOpen}
+        aria-controls="navbar-menu"
+      >
+        <span className="hamburger" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </span>
+      </button>
+
+      <ul id="navbar-menu" className={`navbar-links ${isMenuOpen ? 'is-open' : ''}`}>
         {username ? (
           <>
             <li className="welcome-msg">Witaj, {username}!</li>
             {isOrganization && (
               <>
                 <li>
-                  <Link to="/my-petitions" className="nav-btn-secondary">
+                  <Link to="/my-petitions" className="nav-btn-secondary" onClick={handleMenuClose}>
                     Moje petycje
                   </Link>
                 </li>
                 <li>
-                  <Link to="/petition/create" className="nav-btn-primary create-petition-btn">
+                  <Link
+                    to="/petition/create"
+                    className="nav-btn-primary create-petition-btn"
+                    onClick={handleMenuClose}
+                  >
                     + Utwórz petycję
                   </Link>
                 </li>
@@ -72,12 +101,12 @@ function Navbar() {
         ) : (
           <>
             <li>
-              <Link to="/register" className="nav-btn-secondary">
+              <Link to="/register" className="nav-btn-secondary" onClick={handleMenuClose}>
                 Rejestracja
               </Link>
             </li>
             <li>
-              <Link to="/login" className="nav-btn-primary">
+              <Link to="/login" className="nav-btn-primary" onClick={handleMenuClose}>
                 Logowanie
               </Link>
             </li>
