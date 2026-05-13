@@ -20,6 +20,7 @@ function PetitionDetailsPage() {
   const [isAdminMenuOpen, setIsAdminMenuOpen] = useState(false);
   const [isSavingChanges, setIsSavingChanges] = useState(false);
   const [adminMessage, setAdminMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   // Auth flow states for voting
   const [showAuthPrompt, setShowAuthPrompt] = useState(false);
@@ -35,6 +36,7 @@ function PetitionDetailsPage() {
 
     try {
       setError('');
+      setSuccessMessage('');
       setIsLoading(true);
       const data = await petitionsService.getPetitionById(id);
       const p = data?.data ?? data;
@@ -55,6 +57,7 @@ function PetitionDetailsPage() {
     try {
       setIsSigning(true);
       setError('');
+      setSuccessMessage('');
 
       const identity = createIdentity(secretString);
       const commitment = identity.commitment.toString();
@@ -90,9 +93,12 @@ function PetitionDetailsPage() {
 
       // Reload petition to show updated vote count
       await loadPetition();
+      setSuccessMessage('Twój głos został pomyślnie oddany!');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       console.error(err);
       setError(err?.response?.data?.message || err.message || 'Nie udało się oddać głosu');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } finally {
       setIsSigning(false);
     }
@@ -197,6 +203,7 @@ function PetitionDetailsPage() {
     <div className="petition-details-page">
       <main className="petition-container">
         {error && <div className="error-message">{error}</div>}
+        {successMessage && <div className="success-message">{successMessage}</div>}
 
         <div className="petition-badges">
           <span className="badge category-badge">{petition.category || 'Ogólne'}</span>
