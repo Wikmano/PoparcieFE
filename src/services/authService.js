@@ -14,6 +14,7 @@ const zkpApi = axios.create({
 });
 
 export const authService = {
+  // registering for organizations only
   register: async (userData) => {
     const response = await api.post('register', userData);
     if (response.status === 201) {
