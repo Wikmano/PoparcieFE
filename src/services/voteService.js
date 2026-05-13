@@ -7,8 +7,8 @@ const api = axios.create({
 });
 
 export const voteService = {
-  getPath: async (commitment) => {
-    const response = await api.get('path/' + commitment);
+  getGroup: async (groupId) => {
+    const response = await api.get('group/' + groupId);
     return response.data;
   },
 };
