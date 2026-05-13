@@ -38,6 +38,7 @@ const samplePetition = {
   status: 'active',
   createdAt: '2026-01-01T00:00:00.000Z',
   deadline: '2030-12-31T00:00:00.000Z',
+  description: 'Szczegółowy opis petycji',
 };
 
 function renderPage() {
@@ -125,6 +126,6 @@ describe('PetitionDetailsPage', () => {
     renderPage();
     await waitFor(() => screen.getByRole('button', { name: 'Pokaż menu admina' }));
     fireEvent.click(screen.getByRole('button', { name: 'Pokaż menu admina' }));
-    expect(screen.getByRole('button', { name: 'Ukryj' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Ukryj menu admina' })).toBeInTheDocument();
   });
 });
