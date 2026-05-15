@@ -74,6 +74,11 @@ function Navbar() {
       </button>
 
       <ul id="navbar-menu" className={`navbar-links ${isMenuOpen ? 'is-open' : ''}`}>
+        <li>
+          <Link to="/about" className="nav-link" onClick={handleMenuClose}>
+            O nas
+          </Link>
+        </li>
         {isNormalUser ? (
           <li>
             <button onClick={handleLogout} className="nav-btn-secondary logout-btn">
