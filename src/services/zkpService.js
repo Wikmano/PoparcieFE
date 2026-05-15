@@ -3,7 +3,7 @@ import { BASE_API_URL } from '../AppConfig.js';
 
 const zkpApi = axios.create({
   baseURL: BASE_API_URL + 'vote/',
-  withCredentials: true,
+  withCredentials: false,
 });
 
 export const zkpService = {
