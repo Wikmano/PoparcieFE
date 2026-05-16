@@ -17,7 +17,7 @@ function AboutPage() {
           <strong>nielinkowalny</strong> system <strong>open-source</strong> do wyrażania poparcia
           dla petycji, a w przyszłości także do głosowania elektronicznego (e-votingu). Naszym celem
           jest przeniesienie zaufania, jakie mamy do tradycyjnej, papierowej urny wyborczej, do
-          świata cyfrowego. Chcemy zachęcić ludzi do następującej cyfryzacji, rozpoczęty przez <strong> mObywatela</strong>.
+          świata cyfrowego. Chcemy zachęcić ludzi do następującej cyfryzacji, rozpoczętej przez <strong> mObywatela</strong>.
           Zamiast podpisywać petycję, oddajesz swój głos online, bez konieczności ujawniania swojej tożsamości.
         </p>
         <br></br>
@@ -42,7 +42,7 @@ function AboutPage() {
         </p>
         <p className="about-section__text">
           Rozwiązaniem tego problemu jest technologia{' '}
-          <strong>Nieinteraktywnych Dowodów Wiedzy Zerowej</strong> (zkSNARK). Działa ona jak "cyfrowa" urna wyborcza. Pozwala na udowodnienie systemowi, że masz prawo
+          <strong>Nieinteraktywnych Dowodów Wiedzy Zerowej</strong> (zkSNARK). Działa ona jak "cyfrowa" kabina do głosowania. Pozwala na udowodnienie systemowi, że masz prawo
           głosu, bez ujawniania kim jesteś, ani jak głosujesz. Proces podzieliliśmy na dwa proste
           etapy:
         </p>
