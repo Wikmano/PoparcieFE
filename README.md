@@ -58,3 +58,7 @@ Aby automatycznie naprawić błędy ESLint i formatowanie Prettier:
 ```bash
 npm run fix
 ```
+
+---
+
+**Uwaga:** To repozytorium zawiera wyłącznie część frontendową projektu. Repozytorium dla części backendowej znajduje się tutaj: [mPoparcie-backend](https://github.com/Luk1104/mPoparcie-backend).
