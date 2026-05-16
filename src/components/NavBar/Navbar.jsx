@@ -75,8 +75,8 @@ function Navbar() {
 
       <ul id="navbar-menu" className={`navbar-links ${isMenuOpen ? 'is-open' : ''}`}>
         <li>
-          <Link to="/about" className="nav-link" onClick={handleMenuClose}>
-            O nas
+          <Link to="/about" className="nav-link about-btn" onClick={handleMenuClose}>
+            About Us
           </Link>
         </li>
         {isNormalUser ? (

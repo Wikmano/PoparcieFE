@@ -17,8 +17,9 @@ function AboutPage() {
           <strong>nielinkowalny</strong> system <strong>open-source</strong> do wyrażania poparcia
           dla petycji, a w przyszłości także do głosowania elektronicznego (e-votingu). Naszym celem
           jest przeniesienie zaufania, jakie mamy do tradycyjnej, papierowej urny wyborczej, do
-          świata cyfrowego. Chcemy zachęcić ludzi do następującej cyfryzacji, rozpoczętej przez <strong> mObywatela</strong>.
-          Zamiast podpisywać petycję, oddajesz swój głos online, bez konieczności ujawniania swojej tożsamości.
+          świata cyfrowego. Chcemy zachęcić ludzi do następującej cyfryzacji, rozpoczętej przez{' '}
+          <strong> mObywatela</strong>. Zamiast podpisywać petycję, oddajesz swój głos online, bez
+          konieczności ujawniania swojej tożsamości.
         </p>
         <br></br>
         <p>
@@ -42,9 +43,9 @@ function AboutPage() {
         </p>
         <p className="about-section__text">
           Rozwiązaniem tego problemu jest technologia{' '}
-          <strong>Nieinteraktywnych Dowodów Wiedzy Zerowej</strong> (zkSNARK). Działa ona jak "cyfrowa" kabina do głosowania. Pozwala na udowodnienie systemowi, że masz prawo
-          głosu, bez ujawniania kim jesteś, ani jak głosujesz. Proces podzieliliśmy na dwa proste
-          etapy:
+          <strong>Nieinteraktywnych Dowodów Wiedzy Zerowej</strong> (zkSNARK). Działa ona jak
+          "cyfrowa" kabina do głosowania. Pozwala na udowodnienie systemowi, że masz prawo głosu,
+          bez ujawniania kim jesteś, ani jak głosujesz. Proces podzieliliśmy na dwa proste etapy:
         </p>
 
         {/* Step 1 */}
@@ -60,16 +61,17 @@ function AboutPage() {
             </p>
             <ul className="about-step__list">
               <li>
-                <strong>Potwierdzenie tożsamości:</strong> Rejestrujesz się za pomocą
-                rządowej aplikacji <em>mObywatel</em>. Dzięki temu wiemy, że jesteś człowiekiem,
-                a&nbsp;nie botem, czy innym automatem. 
+                <strong>Potwierdzenie tożsamości:</strong> Rejestrujesz się za pomocą rządowej
+                aplikacji <em>mObywatel</em>. Dzięki temu wiemy, że jesteś człowiekiem, a&nbsp;nie
+                botem, czy innym automatem.
               </li>
               <li>
-                <strong>Anonimowy wpis do bazy danych:</strong> System nie
-                zapisuje Twojego imienia, nazwiska ani numeru PESEL. Zamiast tego, na Twoim własnym
-                urządzeniu (za pomocą tzw. kluczy sprzętowych <em>passkeys</em> lub hasła) tworzona
-                jest Twoja nowa, w&nbsp;100% anonimowa cyfrowa tożsamość opata o sekret do którego tylko Ty masz dostęp. Do publicznej bazy danych trafia tylko wytworzony przez Twoje
-                urządzenie ciąg znaków, który nie mówi o&nbsp;Tobie absolutnie nic.
+                <strong>Anonimowy wpis do bazy danych:</strong> System nie zapisuje Twojego imienia,
+                nazwiska ani numeru PESEL. Zamiast tego, na Twoim własnym urządzeniu (za pomocą tzw.
+                kluczy sprzętowych <em>passkeys</em> lub hasła) tworzona jest Twoja nowa,
+                w&nbsp;100% anonimowa cyfrowa tożsamość opata o sekret do którego tylko Ty masz
+                dostęp. Do publicznej bazy danych trafia tylko wytworzony przez Twoje urządzenie
+                ciąg znaków, który nie mówi o&nbsp;Tobie absolutnie nic.
               </li>
             </ul>
           </div>
@@ -148,9 +150,7 @@ function AboutPage() {
         <p>Projekt można opisać trzema słowami:</p>
         <p className="about-closing__tagline">Bezpiecznie. Anonimowo. Elektronicznie.</p>
         <br></br>
-        <p>
-          Po więcej szczegółów zapraszamy na repozytoria projektu:
-        </p>
+        <p>Po więcej szczegółów zapraszamy na repozytoria projektu:</p>
         <ul style={{ listStyle: 'none', padding: 0, marginTop: '10px' }}>
           <li>
             <strong>Frontend:</strong>{' '}
