@@ -6,27 +6,32 @@ function AboutPage() {
     <main className="about-page">
       {/* Hero */}
       <section className="about-hero">
-        <h1 className="about-hero__title">O nas – Poznaj mPoparcie</h1>
-        <p className="about-hero__subtitle">GŁOSUJESZ I&nbsp;DECYDUJESZ.</p>
+        <h1 className="about-hero__title">Poznaj mPoparcie</h1>
+        <p className="about-hero__subtitle">GŁOSUJESZ I&nbsp;DECYDUJESZ ANONIMOWO</p>
       </section>
 
       {/* Intro */}
       <section className="about-intro">
         <p>
-          Wierzymy, że demokracja w&nbsp;XXI wieku powinna być wygodna, dostępna
-          z&nbsp;każdego miejsca na świecie, a&nbsp;przede wszystkim – całkowicie
-          bezpieczna. Dlatego stworzyliśmy <strong>mPoparcie</strong> –
-          nowoczesny, anonimowy i&nbsp;nielinkowalny system do głosowania
-          elektronicznego (e-votingu). Naszym celem jest przeniesienie zaufania,
+          <strong>mPoparcie</strong> to
+          nowoczesny, <strong>anonimowy</strong> i&nbsp;<strong>nielinkowalny</strong> system <strong>open-source</strong> do wyrażania
+           poparcia dla petycji, a w przyszłości także do
+          głosowania elektronicznego (e-votingu). Naszym celem jest przeniesienie zaufania,
           jakie mamy do tradycyjnej, papierowej urny wyborczej, do świata
           cyfrowego.
+        </p>
+        <br></br>
+        <p>
+          Dzięki zastosowaniu zaawansowanych technologii kryptograficznych i 
+          mObywatela, system pozwala stwierdzić że jesteś prawdziwym człowiekiem
+          uprawnionym do oddania głosu, jednocześnie nie wiedząc o tobie nic.
         </p>
       </section>
 
       {/* How it works */}
       <section className="about-section">
         <h2 className="about-section__heading">
-          🔐 Jak to działa? Magia &bdquo;Wiedzy Zerowej&rdquo;
+          Jak to jest możliwe? Magia &bdquo;Wiedzy Zerowej&rdquo;
         </h2>
         <p className="about-section__text">
           Głównym problemem głosowania przez internet jest zawsze ten sam
@@ -35,8 +40,8 @@ function AboutPage() {
           tajny?</em>
         </p>
         <p className="about-section__text">
-          Rozwiązaniem tego problemu jest przełomowa technologia{' '}
-          <strong>Dowodów Wiedzy Zerowej</strong> (Zero-Knowledge Proofs).
+          Rozwiązaniem tego problemu jest technologia{' '}
+          <strong>Nieinteraktywnych Dowodów Wiedzy Zerowej</strong> (zkSNARK).
           Działa ona jak cyfrowa, matematyczna kabina wyborcza. Pozwala Ci
           udowodnić systemowi, że masz prawo głosu, bez ujawniania kim jesteś,
           ani jak głosujesz. Proces podzieliliśmy na dwa proste etapy:
@@ -55,18 +60,18 @@ function AboutPage() {
             </p>
             <ul className="about-step__list">
               <li>
-                <strong>Potwierdzenie tożsamości:</strong> Logujesz się za
+                <strong>Potwierdzenie tożsamości:</strong> Rejestrujesz się za
                 pomocą bezpiecznej, rządowej aplikacji <em>mObywatel</em>.
                 Dzięki temu wiemy, że jesteś człowiekiem, a&nbsp;nie
                 komputerowym botem.
               </li>
               <li>
-                <strong>Anonimizacja:</strong> Tutaj dzieje się magia. System
+                <strong>Anonimowy wpis do bazy danych:</strong> Tutaj dzieje się magia. System
                 nie zapisuje Twojego imienia, nazwiska ani numeru PESEL.
                 Zamiast tego, na Twoim własnym urządzeniu (za pomocą tzw.
                 kluczy sprzętowych <em>passkeys</em> lub hasła) tworzona jest
-                Twoja nowa, w&nbsp;100% anonimowa tożsamość. Do publicznej
-                bazy danych trafia tylko skomplikowany ciąg znaków, który nie
+                Twoja nowa, w&nbsp;100% anonimowa cyfrowa tożsamość opata o sekret ktory posiadasz tylko TY. Do publicznej
+                bazy danych trafia tylko wytworzony przez twoje urządzenie ciąg znaków, który nie
                 mówi o&nbsp;Tobie absolutnie nic.
               </li>
             </ul>
@@ -112,36 +117,37 @@ function AboutPage() {
       {/* Trust */}
       <section className="about-section">
         <h2 className="about-section__heading">
-          🛡️ Dlaczego możesz nam zaufać?
+          Dlaczego możesz zaufać?
         </h2>
 
         <div className="about-trust-grid">
           <article className="about-trust-card">
             <h3 className="about-trust-card__title">Prywatność absolutna</h3>
             <p>
-              Jesteśmy systemem &bdquo;nielinkowalnym&rdquo;. Oznacza to, że
+              mPoparcie jest systemem &bdquo;nielinkowalnym&rdquo;. Oznacza to, że
               z&nbsp;matematycznego punktu widzenia{' '}
               <strong>nikt</strong> – ani my, ani administratorzy serwerów, ani
               instytucje państwowe – nie jest w&nbsp;stanie połączyć oddanego
-              głosu z&nbsp;Twoim nazwiskiem.
+              głosu z&nbsp;Twoimi danymi osobowymi.
             </p>
           </article>
 
           <article className="about-trust-card">
             <h3 className="about-trust-card__title">Nowoczesna kryptografia</h3>
             <p>
-              Używamy tych samych zaawansowanych algorytmów (np. funkcji skrótu
-              Poseidon czy krzywych eliptycznych), które zabezpieczają
-              najnowocześniejsze systemy finansowe na świecie.
+              Używamy tych samych zaawansowanych algorytmów, które zabezpieczają
+              najnowocześniejsze systemy finansowe oraz sieci blockchain na świecie.
             </p>
           </article>
 
           <article className="about-trust-card">
             <h3 className="about-trust-card__title">Transparentność</h3>
             <p>
-              Nasza baza danych działa jak szklana urna (tzw.{' '}
+              Nasza baza danych (tzw.{' '}
               <em>Drzewo Merkle'a</em>) – jest publicznie dostępna, więc każdy
-              może zweryfikować, że nikt nie manipuluje głosami.
+              może zweryfikować, że nikt nie manipuluje dostępem do głosowania.
+              A po zakończonym głosowaniu, wyniki są jawne więc każdy może sprawdzić,
+               że oddane głosy zostały poprawnie zliczone.
             </p>
           </article>
         </div>
@@ -155,6 +161,14 @@ function AboutPage() {
         </p>
         <p className="about-closing__tagline">
           Bezpiecznie. Anonimowo. Elektronicznie.
+        </p>
+        <br></br>
+        <p>
+          Po więcej szczegółów zapraszmy na repozytorium projektu na{' '}
+          <a href="https://github.com/Luk1104/mPoparcie-backend" target="_blank" rel="noopener noreferrer">
+            GitHub
+          </a>
+          .
         </p>
       </section>
     </main>
