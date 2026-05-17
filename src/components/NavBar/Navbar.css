@@ -304,12 +304,11 @@
     top: 64px;
     right: 12px;
     left: 12px;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: stretch;
     gap: 12px;
-    padding: 12px;
+    padding: 16px;
     background: var(--bg);
     border: 1px solid var(--border);
     border-radius: 12px;
@@ -321,14 +320,17 @@
   }
 
   .navbar-links li {
-    width: auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
 
   .navbar-links a,
   .navbar-links button {
-    width: auto;
+    width: 100%;
     text-align: center;
     box-sizing: border-box;
+    display: inline-block;
   }
 
   .navbar-links.is-open {
