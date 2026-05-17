@@ -3,7 +3,10 @@ import { BASE_API_URL } from '../AppConfig.js';
 
 const api = axios.create({
   baseURL: BASE_API_URL + 'vote/',
-  withCredentials: true,
+  adapter: 'fetch',
+  fetchOptions: {
+    credentials: 'omit',
+  },
 });
 
 export const voteService = {

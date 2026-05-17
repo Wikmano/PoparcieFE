@@ -8,6 +8,7 @@ import './App.css';
 import LoginPage from './pages/Logins/LoginPage.jsx';
 import UnifiedRegisterPage from './pages/Register/UnifiedRegisterPage.jsx';
 import HomePage from './pages/HomePage/HomePage.jsx';
+import AboutPage from './pages/AboutPage/AboutPage.jsx';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/my-petitions" element={<MyPetitionsPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<UnifiedRegisterPage />} />
+        <Route path="/about" element={<AboutPage />} />
       </Routes>
     </div>
   );
