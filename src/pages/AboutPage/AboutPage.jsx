@@ -14,12 +14,12 @@ function AboutPage() {
       <section className="about-intro">
         <p>
           <strong>mPoparcie</strong> to nowoczesny, <strong>anonimowy</strong> i&nbsp;
-          <strong>nielinkowalny</strong> system <strong>open-source</strong> do wyrażania poparcia
-          dla petycji, a w przyszłości także do głosowania elektronicznego (e-votingu). Naszym celem
-          jest przeniesienie zaufania, jakie mamy do tradycyjnej, papierowej urny wyborczej, do
-          świata cyfrowego. Chcemy zachęcić ludzi do następującej cyfryzacji, rozpoczętej przez{' '}
-          <strong> mObywatela</strong>. Zamiast podpisywać petycję, oddajesz swój głos online, bez
-          konieczności ujawniania swojej tożsamości.
+          <strong>nielinkowalny</strong> system do wyrażania poparcia dla petycji, a w przyszłości
+          także do głosowania elektronicznego (e-votingu). Naszym celem jest przeniesienie zaufania,
+          jakie mamy do tradycyjnej, papierowej urny wyborczej, do świata cyfrowego. Chcemy zachęcić
+          ludzi do następującej cyfryzacji, rozpoczętej przez <strong> mObywatela</strong>. Zamiast
+          podpisywać petycję, oddajesz swój głos online, bez konieczności ujawniania swojej
+          tożsamości.
         </p>
         <br></br>
         <p>
@@ -43,18 +43,16 @@ function AboutPage() {
         </p>
         <p className="about-section__text">
           Rozwiązaniem tego problemu jest technologia{' '}
-          <strong>Nieinteraktywnych Dowodów Wiedzy Zerowej</strong> (zkSNARK). Działa ona jak
-          "cyfrowa" kabina do głosowania. Pozwala na udowodnienie systemowi, że masz prawo głosu,
-          bez ujawniania kim jesteś, ani jak głosujesz. Proces podzieliliśmy na dwa proste etapy:
+          <strong>Nieinteraktywnych Dowodów Wiedzy Zerowej</strong> (zkSNARK). Pozwala ona na
+          udowodnienie systemowi, że masz prawo głosu, bez ujawniania kim jesteś, ani jak głosujesz.
+          Proces podzieliliśmy na dwa proste etapy:
         </p>
 
         {/* Step 1 */}
         <article className="about-step">
           <div className="about-step__indicator">1</div>
           <div className="about-step__body">
-            <h3 className="about-step__title">
-              Rejestracja <span className="about-step__badge">Pobranie cyfrowej karty</span>
-            </h3>
+            <h3 className="about-step__title">Rejestracja </h3>
             <p className="about-step__lead">
               Aby zagłosować, musimy mieć pewność, że jesteś prawdziwą osobą, która ma do tego
               prawo.
@@ -81,9 +79,7 @@ function AboutPage() {
         <article className="about-step">
           <div className="about-step__indicator">2</div>
           <div className="about-step__body">
-            <h3 className="about-step__title">
-              Głosowanie <span className="about-step__badge">Wrzucenie głosu do urny</span>
-            </h3>
+            <h3 className="about-step__title">Głosowanie</h3>
             <p className="about-step__lead">
               Kiedy przychodzi czas decyzji, nie musisz się już nigdzie logować swoimi danymi.
             </p>
@@ -93,8 +89,13 @@ function AboutPage() {
                 uprawnionych i&nbsp;&bdquo;odnajduje&rdquo; na niej Twoją anonimową tożsamość.
               </li>
               <li>
-                Następnie oddajesz głos. Twój telefon generuje specjalny matematyczny dowód, który
-                potwierdza:{' '}
+                Z Twojego klucza passkeys lub hasła odtwarzana jest Twoja anonimowa tożsamość
+                lokalnie na urządzeniu — dzięki temu nikt nie może się pod Ciebie podszyć i możesz
+                bezpiecznie oddać głos.
+              </li>
+              <li>
+                Podczas oddawania głosu twoje urządzenie generuje specjalny matematyczny dowód,
+                który potwierdza:{' '}
                 <em>&bdquo;Osoba oddająca ten głos jest na liście uprawnionych&rdquo;</em>.
               </li>
               <li>
@@ -114,7 +115,7 @@ function AboutPage() {
           <article className="about-trust-card">
             <h3 className="about-trust-card__title">Prywatność absolutna</h3>
             <p>
-              mPoparcie jest systemem &bdquo;nielinkowalnym&rdquo;. Oznacza to, że
+              mPoparcie jest systemem anonimowym i nielinkowalnym. Oznacza to, że
               z&nbsp;matematycznego punktu widzenia <strong>nikt</strong> – ani my, ani
               administratorzy serwerów, ani instytucje państwowe – nie jest w&nbsp;stanie połączyć
               oddanego głosu z&nbsp;Twoimi danymi osobowymi.
@@ -132,10 +133,9 @@ function AboutPage() {
           <article className="about-trust-card">
             <h3 className="about-trust-card__title">Transparentność</h3>
             <p>
-              Nasza baza danych (tzw. <em>Drzewo Merkle'a</em>) – jest publicznie dostępna, więc
-              każdy może zweryfikować, że nikt nie manipuluje dostępem do głosowania. A po
-              zakończonym głosowaniu, wyniki są jawne więc każdy może sprawdzić, że oddane głosy
-              zostały poprawnie zliczone.
+              Nasza baza danych jest publicznie dostępna, więc każdy może zweryfikować, że nikt nie
+              manipuluje dostępem do głosowania. A po zakończonym głosowaniu, wyniki są jawne więc
+              każdy może sprawdzić, że oddane głosy zostały poprawnie zliczone.
             </p>
           </article>
         </div>
