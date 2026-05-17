@@ -353,3 +353,43 @@
   background-color: var(--bg-subtle);
   min-height: 100vh;
 }
+
+@media (max-width: 600px) {
+  .petition-container {
+    padding: 2rem 1.5rem;
+  }
+
+  .author-info {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .petition-separator {
+    display: none;
+  }
+
+  .petition-stats {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stats-header {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: baseline;
+    gap: 6px;
+    order: 1;
+  }
+
+  .progress-bar-large {
+    order: 2;
+  }
+
+  .stats-footer {
+    text-align: center;
+    order: 3;
+    margin-top: 1rem;
+  }
+}
